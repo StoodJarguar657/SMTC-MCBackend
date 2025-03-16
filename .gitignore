@@ -398,3 +398,9 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+SMTC-MCBackend/SMTC-MCBackend/ops.json
+SMTC-MCBackend/SMTC-MCBackend/whitelist.json
+SMTC-MCBackend/SMTC-MCBackend/usercache.json
+SMTC-MCBackend/SMTC-MCBackend/server.properties
+SMTC-MCBackend/SMTC-MCBackend/banned-ips.json
+SMTC-MCBackend/SMTC-MCBackend/banned-players.json

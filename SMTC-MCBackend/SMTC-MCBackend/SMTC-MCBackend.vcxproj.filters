@@ -21,6 +21,9 @@
     <ClCompile Include="Libraries\RCON\RCON.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Libraries\Webserver\WebServer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Libraries\Crow\crow\middlewares\cookie_parser.h">
@@ -1992,6 +1995,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Libraries\Json\json.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\Webserver\Webserver.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
