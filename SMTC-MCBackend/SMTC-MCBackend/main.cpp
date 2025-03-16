@@ -1,5 +1,6 @@
 #include <crow.h>
 #include <RCON.hpp>
+#include <json.hpp>
 
 int main() {
 
@@ -15,7 +16,7 @@ int main() {
 
         time_t curTime = time(nullptr);
         if ((curTime - nextMessagePossible) < 0) {
-            crow::json::wvalue returnValue;
+            nlohmann::json returnValue;
             returnValue["status"] = "failed";
             returnValue["errorCode"] = 1;
             returnValue["message"] = "Wait a few seconds before the next message.";
@@ -27,29 +28,40 @@ int main() {
         // "Authorization" should have the RCON password
         const auto& authorization = req.headers.find("Authorization");
         if (authorization == req.headers.end()) {
-            crow::json::wvalue returnValue;
+            nlohmann::json returnValue;
             returnValue["status"] = "failed";
             returnValue["errorCode"] = 2;
             returnValue["message"] = "Failed to find 'Authorization' in the header.";
             return returnValue.dump();
         }
 
-        const auto& body = crow::json::load(req.body);
-        if (!body.has("message")) {
-            crow::json::wvalue returnValue;
+        const nlohmann::json& body = nlohmann::json::parse(req.body, nullptr, false, true);
+        
+        const auto& jsonMessage = body.find("message");
+        if (jsonMessage == body.end()) {
+            nlohmann::json returnValue;
             returnValue["status"] = "failed";
-            returnValue["errorCode"] = 3;
+            returnValue["errorCode"] = 4;
             returnValue["message"] = "Failed to find 'message' in the body.";
             return returnValue.dump();
         }
 
+        // Check types of payload
+        if (jsonMessage.value().type() != nlohmann::json::value_t::string) {
+            nlohmann::json returnValue;
+            returnValue["status"] = "failed";
+            returnValue["errorCode"] = 5;
+            returnValue["message"] = "Message is not a string.";
+            return returnValue.dump();
+        }
+
         const std::string& rconPassword = authorization->second;
-        const std::string& payload = body["message"].s();
+        const std::string& payload = jsonMessage->get<std::string>();
 
         if (!rcon.authenticate(rconPassword)) {
             crow::json::wvalue returnValue;
             returnValue["status"] = "failed";
-            returnValue["errorCode"] = 4;
+            returnValue["errorCode"] = 5;
             returnValue["message"] = "RCON password is invalid.";
             nextMessagePossible = curTime + 10; // Block for 10 seconds
             return returnValue.dump();
@@ -59,7 +71,7 @@ int main() {
         if (!rcon.sendConsoleCommand(payload, &commandResponse)) {
             crow::json::wvalue returnValue;
             returnValue["status"] = "failed";
-            returnValue["errorCode"] = 5;
+            returnValue["errorCode"] = 6;
             returnValue["message"] = "Command is invalid.";
             return returnValue.dump();
         }
