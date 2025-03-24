@@ -1,0 +1,22 @@
+{
+  "name": "smtcbot",
+  "version": "1.0.0",
+  "main": "src/Main.js",
+  "private": true,
+  "scripts": {
+    "start": "cross-env NODE_ENV=production node .",
+    "start:dev": "node .",
+    "dev": "nodemon .",
+    "deploy": "node Tools/Deploy.js",
+    "deploy:public": "node Tools/DeployPublic.js"
+  },
+  "dependencies": {
+    "cli-table3": "^0.6.5",
+    "discord.js": "^14.18.0",
+    "dotenv": "^16.4.7",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
+  }
+}
