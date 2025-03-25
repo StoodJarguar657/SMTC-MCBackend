@@ -106,10 +106,10 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_WINSOCK_DEPRECATED_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)SMTC-MCBackend\Libraries\;$(SolutionDir)SMTC-MCBackend\Libraries\Crow;$(SolutionDir)SMTC-MCBackend\Libraries\Asio;$(SolutionDir)SMTC-MCBackend\Libraries\RCON;$(SolutionDir)SMTC-MCBackend\Libraries\Json;$(SolutionDir)SMTC-MCBackend\Libraries\Webserver;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)SMTC-MCBackend\Libraries\;$(SolutionDir)SMTC-MCBackend\Libraries\Crow;$(SolutionDir)SMTC-MCBackend\Libraries\Asio;$(SolutionDir)SMTC-MCBackend\Libraries\RCON;$(SolutionDir)SMTC-MCBackend\Libraries\Json;$(SolutionDir)SMTC-MCBackend\Libraries\MCBackend;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -136,7 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Libraries\RCON\RCON.cpp" />
-    <ClCompile Include="Libraries\Webserver\WebServer.cpp" />
+    <ClCompile Include="Libraries\MCBackend\MCBackend.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -797,7 +797,7 @@
     <ClInclude Include="Libraries\Crow\crow\websocket.h" />
     <ClInclude Include="Libraries\Json\json.hpp" />
     <ClInclude Include="Libraries\RCON\RCON.hpp" />
-    <ClInclude Include="Libraries\Webserver\Webserver.hpp" />
+    <ClInclude Include="Libraries\MCBackend\MCBackend.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

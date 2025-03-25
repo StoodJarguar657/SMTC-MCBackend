@@ -12,7 +12,7 @@ private:
 
     int socketHandle = 0;
 
-    std::unordered_map<int, std::string> responses;
+    std::unordered_map<int, std::string> responses = {};
 
 public:
 
@@ -29,7 +29,8 @@ public:
         void deserialize(const char* buffer, int bytesRead);
     };
 
-    RCON(const std::string& ip, int port = 25575);
+    bool isInit = false;
+    bool init(const std::string& ip, int port = 25575);
 
     bool authenticate(const std::string& password);
 

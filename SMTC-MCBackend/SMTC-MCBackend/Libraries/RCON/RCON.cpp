@@ -18,7 +18,7 @@ void RCON::Packet::set(int reqId, int packetType, const std::string& data) {
     this->requestId = reqId;
     this->type = packetType;
     this->payload = data;
-    this->length = 4 + 4 + payload.size() + 2;
+    this->length = 4 + 4 + static_cast<int>(payload.size()) + 2;
 }
 
 std::string RCON::Packet::serialize() {
@@ -35,8 +35,8 @@ std::string RCON::Packet::serialize() {
     std::memcpy(&packet[offset], &this->type, 4);
     offset += 4;
 
-    std::memcpy(&packet[offset], payload.c_str(), payload.size());
-    offset += payload.size();
+    std::memcpy(&packet[offset], payload.c_str(), static_cast<int>(payload.size()));
+    offset += static_cast<int>(payload.size());
 
     return packet;
 }
@@ -63,20 +63,20 @@ void RCON::Packet::deserialize(const char* buffer, int bytesRead) {
     payload = std::string(&buffer[offset], bytesRead - offset - 2); // Exclude the null terminators
 }
 
-RCON::RCON(const std::string& ip, int port) {
+bool RCON::init(const std::string& ip, int port) {
 
 #ifdef _WIN32
     WSADATA wsaData;
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
-        std::cerr << "[RCON -> RCON] WSAStartup failed\n";
-        return;
+        printf("[RCON -> RCON] WSAStartup failed\n");
+        return false;
     }
 #endif
 
-    this->socketHandle = socket(AF_INET, SOCK_STREAM, 0);
+    this->socketHandle = static_cast<int>(socket(AF_INET, SOCK_STREAM, 0));
     if (this->socketHandle < 0) {
-        perror("[RCON -> RCON] Socket creation failed");
-        return;
+        printf("[RCON -> RCON] Socket creation failed\n");
+        return false;
     }
 
     sockaddr_in serverAddress{};
@@ -84,16 +84,19 @@ RCON::RCON(const std::string& ip, int port) {
     serverAddress.sin_port = htons(port);
 
     if (inet_pton(AF_INET, ip.c_str(), &serverAddress.sin_addr) <= 0) {
-        perror("[RCON -> RCON] Invalid address");
+        printf("[RCON -> RCON] Invalid address\n");
         closesocket(this->socketHandle);
-        return;
+        return false;
     }
 
     if (connect(this->socketHandle, reinterpret_cast<sockaddr*>(&serverAddress), sizeof(serverAddress)) < 0) {
-        perror("[RCON -> RCON] Connection failed");
+        printf("[RCON -> RCON] Connection failed\n");
         closesocket(this->socketHandle);
-        return;
+        return false;
     }
+
+    this->isInit = true;
+    return true;
 }
 
 bool RCON::authenticate(const std::string& password) {
@@ -103,8 +106,8 @@ bool RCON::authenticate(const std::string& password) {
     authPacket.set(requestId, PACKET_TYPE_AUTH, password);
 
     const std::string& serializedPacket = authPacket.serialize();
-    if (send(this->socketHandle, serializedPacket.c_str(), serializedPacket.size(), 0) < 0) {
-        perror("[RCON -> Authenticate] Failed to send auth packet");
+    if (send(this->socketHandle, serializedPacket.c_str(), static_cast<int>(serializedPacket.size()), 0) < 0) {
+        printf("[RCON -> Authenticate] Failed to send auth packet\n");
         closesocket(this->socketHandle);
         return false;
     }
@@ -112,7 +115,7 @@ bool RCON::authenticate(const std::string& password) {
     char buffer[4096] = { 0 };
     int bytesRead = recv(this->socketHandle, buffer, 4096, 0);
     if (bytesRead <= 0) {
-        perror("[RCON -> Authenticate] Failed to receive response");
+        printf("[RCON -> Authenticate] Failed to receive response\n");
         closesocket(this->socketHandle);
         return false;
     }
@@ -135,8 +138,8 @@ bool RCON::sendConsoleCommand(const std::string& command, std::string* response)
     consolePacket.set(PACKET_TYPE_COMMAND, PACKET_TYPE_COMMAND, command);
 
     const std::string& serializedPacket = consolePacket.serialize();
-    if (send(this->socketHandle, serializedPacket.c_str(), serializedPacket.size(), 0) < 0) {
-        perror("[RCON -> SendConsoleCommand] Failed to send console command");
+    if (send(this->socketHandle, serializedPacket.c_str(), static_cast<int>(serializedPacket.size()), 0) < 0) {
+        printf("[RCON -> SendConsoleCommand] Failed to send console command\n");
         closesocket(this->socketHandle);
         return false;
     }
@@ -170,7 +173,7 @@ bool RCON::sendConsoleCommand(const std::string& command, std::string* response)
     }
 
     Packet responsePacket;
-    responsePacket.deserialize(fullPacketBuffer, packetBufOffset);
+    responsePacket.deserialize(fullPacketBuffer, static_cast<int>(packetBufOffset));
 
     delete[] fullPacketBuffer;
 
