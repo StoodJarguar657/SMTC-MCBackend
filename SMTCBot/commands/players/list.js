@@ -17,7 +17,7 @@ module.exports = {
 
     /** @param {import("discord.js").Interaction} interaction */
     async Execute(interaction) {        
-        const response = await RCONManager.SendCommand(`/list`)
+        const response = await RCONManager.SendCommand(interaction.member.id, `/list`)
         if(response.status !== "success")
             return await interaction.reply({ content: `Error while running command! ${response.message}`, flags: MessageFlags.Ephemeral })
 

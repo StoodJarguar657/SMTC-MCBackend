@@ -16,11 +16,14 @@ module.exports = {
 
     /** @param {import("discord.js").Interaction} interaction */
     async Execute(interaction) {        
-        /** @type {{uuid: string, name: string, created: string, source: string, expires: string, reason: string}[]} */
-        const bannedPlayersData = await FileReaderManager.ReadFileFromServerJSON("banned-players.json")
+        const bannedPlayersData = await FileReaderManager.ReadFileFromServerJSON(interaction.member.id, "banned-players.json")
+        const bannedIpsData = await FileReaderManager.ReadFileFromServerJSON(interaction.member.id, "banned-ips.json")
 
-        /** @type {{ip: string, created: string, source: string, expires: string, reason: string}[]} */
-        const bannedIpsData = await FileReaderManager.ReadFileFromServerJSON("banned-ips.json")
+        if(bannedIpsData.status !== "success")
+            return await interaction.reply({ content: bannedIpsData.message, flags: MessageFlags.Ephemeral })
+
+        if(bannedPlayersData.status !== "success")
+            return await interaction.reply({ content: bannedPlayersData.message, flags: MessageFlags.Ephemeral })
 
         const tbl = new Table({
             head: ["Banned User/IP", "Banned by", "Expiration", "Reason for ban"],
@@ -30,8 +33,8 @@ module.exports = {
             }
         })
 
-        bannedIpsData.forEach(value => tbl.push([value.ip, value.source, value.expires, value.reason]))
-        bannedPlayersData.forEach(value => tbl.push([value.name, value.source, value.expires, value.reason]))
+        bannedIpsData.data.forEach(value => tbl.push([value.ip, value.source, value.expires, value.reason]))
+        bannedPlayersData.data.forEach(value => tbl.push([value.name, value.source, value.expires, value.reason]))
 
         const filePath = `temp/${randomUUID()}.txt`
         await fs.writeFile(filePath, tbl.toString(), "utf8")

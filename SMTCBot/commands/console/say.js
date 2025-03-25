@@ -22,11 +22,11 @@ module.exports = {
             {"text": ": ", "color": "dark_red"},
             {"text":  message, "color": "white"}
         ]
-        const response = await RCONManager.SendCommand(`/tellraw @a ${JSON.stringify(json)}`)
+        const response = await RCONManager.SendCommand(interaction.member.id, `/tellraw @a ${JSON.stringify(json)}`)
 
         if(response.status === "success")
             return await interaction.reply({ content: "Sent message!", flags: MessageFlags.Ephemeral })
 
-        await interaction.reply({ content: "Failed to send the message!", flags: MessageFlags.Ephemeral })
+        await interaction.reply({ content: `Failed to send message! ${response.message}`, flags: MessageFlags.Ephemeral })
     }
 }

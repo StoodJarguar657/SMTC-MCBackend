@@ -17,7 +17,7 @@ module.exports = {
         const username = interaction.options.getString("ip")
         const reason = interaction.options.getString("reason") || "No reason specified!"
         
-        const response = await RCONManager.SendCommand(`/ban-ip ${username} ${reason}`)
+        const response = await RCONManager.SendCommand(interaction.member.id, `/ban-ip ${username} ${reason}`)
 
         await interaction.reply({ content: response.message, flags: MessageFlags.Ephemeral })
     }

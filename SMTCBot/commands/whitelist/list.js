@@ -17,8 +17,11 @@ module.exports = {
 
     /** @param {import("discord.js").Interaction} interaction */
     async Execute(interaction) {
-        const response = await FileReaderManager.ReadFileFromServerJSON("whitelist.json")
-        const players2D = convertTo2DArray(response.map(value => value.name), 5)
+        const response = await FileReaderManager.ReadFileFromServerJSON(interaction.member.id, "whitelist.json")
+        if(response.status !== "success")
+            return await interaction.reply({ content: response.message, flags: MessageFlags.Ephemeral })
+
+        const players2D = convertTo2DArray(response.data.map(value => value.name), 5)
 
         const tbl = new Table({
             head: [],

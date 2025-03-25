@@ -15,7 +15,7 @@ module.exports = {
 
     /** @param {import("discord.js").Interaction} interaction */
     async Execute(interaction) {
-        const response = await RCONManager.SendCommand(interaction.options.getString("command"))
+        const response = await RCONManager.SendCommand(interaction.member.id, interaction.options.getString("command"))
         if(response.status === "success") {
             if(response.message.length === 0)
                 return await interaction.reply({ content: "\`\`\`\nNo response received\n\`\`\`", flags: MessageFlags.Ephemeral})
@@ -32,6 +32,6 @@ module.exports = {
             return
         }
 
-        return await interaction.reply({ content: `Failed to send RCON message! ${response.message}`, flags: MessageFlags.Ephemeral })
+        return await interaction.reply({ content: `Failed to send command! ${response.message}`, flags: MessageFlags.Ephemeral })
     }
 }

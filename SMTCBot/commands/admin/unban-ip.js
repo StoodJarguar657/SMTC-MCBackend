@@ -14,7 +14,7 @@ module.exports = {
     /** @param {import("discord.js").Interaction} interaction */
     async Execute(interaction) {
         const username = interaction.options.getString("ip")        
-        const response = await RCONManager.SendCommand(`/pardon-ip ${username}`)
+        const response = await RCONManager.SendCommand(interaction.member.id, `/pardon-ip ${username}`)
 
         await interaction.reply({ content: response.message, flags: MessageFlags.Ephemeral })
     }

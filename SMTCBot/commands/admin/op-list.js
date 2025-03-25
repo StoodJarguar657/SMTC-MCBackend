@@ -16,8 +16,11 @@ module.exports = {
 
     /** @param {import("discord.js").Interaction} interaction */
     async Execute(interaction) {
-        const data = await FileReaderManager.ReadFileFromServerJSON("ops.json")
-        const operators = data.map((player) => [player.uuid, player.name, player.level, player.bypassesPlayerLimit ? "Yes" : "No"])
+        const data = await FileReaderManager.ReadFileFromServerJSON(interaction.member.id, "ops.json")
+        if(data.status !== "success")
+            return await interaction.reply({ content: data.message, flags: MessageFlags.Ephemeral })
+
+        const operators = data.data.map((player) => [player.uuid, player.name, player.level, player.bypassesPlayerLimit ? "Yes" : "No"])
 
         const tbl = new Table({
             head: ["Player UUID", "Player Name", "Operator Level", "Bypasses player limit?"],

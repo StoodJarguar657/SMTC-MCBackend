@@ -14,7 +14,7 @@ module.exports = {
     /** @param {import("discord.js").Interaction} interaction */
     async Execute(interaction) {
         const username = interaction.options.getString("username")
-        const response = await RCONManager.SendCommand(`/whitelist add ${username}`)
+        const response = await RCONManager.SendCommand(interaction.member.id, `/whitelist add ${username}`)
 
         await interaction.reply({ content: response.message, flags: MessageFlags.Ephemeral })
     }

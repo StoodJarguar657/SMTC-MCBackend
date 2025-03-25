@@ -1,5 +1,4 @@
 const fs = require("fs/promises")
-const path = require("path")
 
 const UserManager = require("./UserManager")
 
@@ -36,8 +35,6 @@ module.exports = {
             return await command.Execute(interaction)
         }
         
-        // Its a command we don't have permission, respond with a permission error.
-
         await interaction.reply({ content: "Unknown command", flags: MessageFlags.Ephemeral })
     },
 

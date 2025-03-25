@@ -1,29 +1,33 @@
+const DisplayErrorHandler = require("../DisplayErrorHandler")
 const SettingsManager = require("./SettingsManager")
 
 module.exports = {
-    async ReadFileFromServerText(filePath) {
-        const settings = await SettingsManager.LoadSettings()
-        const response = await fetch("http://" + settings.info.backendAddress + "/readFile", {
-            headers: {
-                Authorization: process.env.RCON_PASSWORD,
-            },
-            method: "POST",
-            body: JSON.stringify({ filePath: filePath })
-        })
+    async ReadFileFromServerJSON(userId, filePath) {
+        try {
+            const settings = await SettingsManager.LoadSettings()
+            const response = await fetch("http://" + settings.info.backendAddress + "/readFile", {
+                headers: {
+                    Authorization: process.env.RCON_PASSWORD,
+                },
+                method: "POST",
+                body: JSON.stringify({ filePath: filePath }),
+                signal: AbortSignal.timeout(1000)
+            })
 
-        return await response.text()
-    },
-
-    async ReadFileFromServerJSON(filePath) {
-        const settings = await SettingsManager.LoadSettings()
-        const response = await fetch("http://" + settings.info.backendAddress + "/readFile", {
-            headers: {
-                Authorization: process.env.RCON_PASSWORD,
-            },
-            method: "POST",
-            body: JSON.stringify({ filePath: filePath })
-        })
-
-        return await response.json()
+            const data = await response.json()
+            if(data.status !== "success")
+                return await DisplayErrorHandler.ParseErrMessage(userId, data)
+            
+            return {
+                status: "success",
+                data: data
+            }
+        } catch (error) {
+            return {
+                status: "error",
+                message: "Request Timeout (Backend is maybe offline?)",
+                errorCode: -1
+            }
+        }
     }
 }

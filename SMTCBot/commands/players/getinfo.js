@@ -34,7 +34,7 @@ module.exports = {
         if(username.startsWith("@"))
             return await interaction.reply({ content: "Invalid username!", flags: MessageFlags.Ephemeral })
 
-        const response = await RCONManager.SendCommand(`/data get entity ${username}`)
+        const response = await RCONManager.SendCommand(interaction.member.id, `/data get entity ${username}`)
         if(response.status !== "success")
             return await interaction.reply({ content: `Failed to receive information! ${response.message}`, flags: MessageFlags.Ephemeral })
 
@@ -47,11 +47,11 @@ module.exports = {
 
         message += `Position: \`(X: ${Math.floor(data.Pos[0])}, Y: ${Math.floor(data.Pos[1])}, Z: ${Math.floor(data.Pos[2])})\`\n`
         message += `Dimension: \`${worldNameTable[data.Dimension] || "Unknown"}\`\n`
-        message += `-------------------------------------------------------\n`
+        message += `\n`
         message += `Health: **${data.Health}/20**\n`
         message += `Food: **${data.foodLevel}/20**\n`
         message += `XP Level: **${data.XpLevel || 0}**\n`
-        message += `-------------------------------------------------------\n`
+        message += `\n`
         message += `Gamemode **${gamemodeTable[data.playerGameType] || "Unknown"}**\n`
 
         const openNameMcBtn = new ButtonBuilder()

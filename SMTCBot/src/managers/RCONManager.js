@@ -1,8 +1,9 @@
+const DisplayErrorHandler = require("../DisplayErrorHandler")
 const SettingsManager = require("./SettingsManager")
 
 module.exports = {
     /** @returns {{status: string, message: string, errorCode: number?}} */
-    async SendCommand (command) {
+    async SendCommand (userId, command) {
         const settings = await SettingsManager.LoadSettings()
         const url = "http://" + settings.info.backendAddress + "/rconSend"
 
@@ -16,7 +17,11 @@ module.exports = {
                 signal: AbortSignal.timeout(1000)
             })
     
-            return await response.json()
+            const data = await response.json()
+            if(data.status !== "success")
+                return await DisplayErrorHandler.ParseErrMessage(userId, data)
+            
+            return data
         } catch (error) {
             return {
                 status: "error",

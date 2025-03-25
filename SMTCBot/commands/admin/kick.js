@@ -17,7 +17,7 @@ module.exports = {
         const username = interaction.options.getString("username")
         const reason = interaction.options.getString("reason") || "No reason specified!"
         
-        const response = await RCONManager.SendCommand(`/kick ${username} ${reason}`)
+        const response = await RCONManager.SendCommand(interaction.member.id, `/kick ${username} ${reason}`)
 
         await interaction.reply({ content: response.message, flags: MessageFlags.Ephemeral })
     }
