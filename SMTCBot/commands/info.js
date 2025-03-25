@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require("discord.js");
 const SettingsManager = require("../src/managers/SettingsManager");
 
 module.exports = {
-    permissionLevel: 1,
+    permissionLevel: 0,
     data: new SlashCommandBuilder()
         .setName("server-info")
         .setDescription("Gives you server information"),

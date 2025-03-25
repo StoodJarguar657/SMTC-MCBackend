@@ -1,9 +1,15 @@
 const databaseManager = require("./DatabaseManager")
+const translation = {
+    [-1]: "No permissions",
+    [0]: "Minecraft Player",
+    [1]: "Administrator",
+    [2]: "Developer"
+}
 
 module.exports = {
     async CreateUser(userId) {
         return new Promise((resolve, reject) => {
-            databaseManager.run(`INSERT INTO users (userId, permissionLevel) VALUES (?, ?)`, [userId.toString(), 0], (err) => {
+            databaseManager.run(`INSERT INTO users (userId, permissionLevel) VALUES (?, ?)`, [userId.toString(), -1], (err) => {
                     if (err) reject(err);
                     resolve();
                 }
@@ -24,14 +30,13 @@ module.exports = {
     },
 
     async UpdatePermissionLevel(userId, newPermissionLevel) {
-        const { changes } = await new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             databaseManager.run(`UPDATE users SET permissionLevel = ? WHERE userId = ?`, [newPermissionLevel, userId], (err) => {
                 if (err) reject(err)
 
-                resolve(this)
+                resolve()
             })
         })
-        return changes > 0
     },
 
     async GetPermissionLevel(userId) {
@@ -43,6 +48,18 @@ module.exports = {
             })
         })
 
-        return row ? row.permissionLevel : 0
+        return row ? row.permissionLevel : -1
+    },
+
+    TranslateUserPermissionLevel(permissionLevel) {
+        return translation[permissionLevel] || "Unknown"
+    },
+
+    GetTranslationNames() {
+        return translation
+    },
+
+    IsValidPermissionLevel(permissionLevel) {
+        return translation[permissionLevel] !== undefined
     }
 }
