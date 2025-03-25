@@ -3,6 +3,8 @@ const RCONManager = require("../../src/managers/RCONManager");
 const Table = require("cli-table3");
 
 const { convertTo2DArray } = require("../../src/Utils");
+const fs = require("fs/promises");
+const { randomUUID } = require("crypto");
 
 module.exports = {
     permissionLevel: 1,
@@ -32,7 +34,11 @@ module.exports = {
     
         tbl.push(...players2D)
         
-        let message = "**Players in the server:**\n\n```\n" + tbl.toString() + "\n```"
-        await interaction.reply({ content: message, flags: MessageFlags.Ephemeral })
+        const filePath = `temp/${randomUUID()}.txt`
+        await fs.writeFile(filePath, tbl.toString(), "utf8")
+                  
+        await interaction.reply({ content: "**Players in the server:**", files: [filePath], flags: MessageFlags.Ephemeral })
+
+        await fs.rm(filePath)
     }
 }

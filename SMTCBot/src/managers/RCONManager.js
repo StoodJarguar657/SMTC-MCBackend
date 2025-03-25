@@ -3,7 +3,7 @@ const SettingsManager = require("./SettingsManager")
 module.exports = {
     /** @returns {{status: string, message: string, errorCode: number?}} */
     async SendCommand (command) {
-        const settings = SettingsManager.LoadSettings()
+        const settings = await SettingsManager.LoadSettings()
         const url = "http://" + settings.info.backendAddress + "/rconSend"
 
         try {

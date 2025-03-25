@@ -29,8 +29,6 @@ module.exports = {
 
     /** @param {import("discord.js").Interaction} interaction */
     async Execute(interaction) {
-        const settings = SettingsManager.LoadSettings()
-
         /** @type {string} */
         const username = interaction.options.getString("username")
         if(username.startsWith("@"))

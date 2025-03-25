@@ -13,8 +13,16 @@ module.exports = {
 
     /** @param {import("discord.js").Interaction} interaction */
     async Execute(interaction) {
-        const message = interaction.options.getString("message") 
-        const response = await RCONManager.SendCommand(`/tellraw @a "[Server]: ${message.replaceAll("\"", "\\\"")}"`)
+        const message = interaction.options.getString("message")
+        const json = [
+            "",
+            {"text": "[", "bold": true, "color": "dark_red"},
+            {"text": "Server", "bold": true, "color": "red"},
+            {"text": "]", "bold": true, "color": "dark_red"},
+            {"text": ": ", "color": "dark_red"},
+            {"text":  message, "color": "white"}
+        ]
+        const response = await RCONManager.SendCommand(`/tellraw @a ${JSON.stringify(json)}`)
 
         if(response.status === "success")
             return await interaction.reply({ content: "Sent message!", flags: MessageFlags.Ephemeral })

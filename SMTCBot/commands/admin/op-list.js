@@ -1,40 +1,38 @@
 const { SlashCommandSubcommandBuilder, MessageFlags } = require("discord.js");
-const FileReaderManager = require("../../src/managers/FileReaderManager");
+const FileReaderManager = require("../../src/managers/FileReaderManager")
 const Table = require("cli-table3");
 
-const { convertTo2DArray } = require("../../src/Utils");
 const fs = require("fs/promises");
 const { randomUUID } = require("crypto");
 
 module.exports = {
     permissionLevel: 1,
     data: new SlashCommandSubcommandBuilder()
-        .setName("list")
-        .setDescription("Lists all whitelisted players")
+        .setName("op-list")
+        .setDescription("Shows you all defined operators")
     ,
 
     async Init() {},
 
     /** @param {import("discord.js").Interaction} interaction */
     async Execute(interaction) {
-        const response = await FileReaderManager.ReadFileFromServerJSON("whitelist.json")
-        const players2D = convertTo2DArray(response.map(value => value.name), 5)
+        const data = await FileReaderManager.ReadFileFromServerJSON("ops.json")
+        const operators = data.map((player) => [player.uuid, player.name, player.level, player.bypassesPlayerLimit ? "Yes" : "No"])
 
         const tbl = new Table({
-            head: [],
+            head: ["Player UUID", "Player Name", "Operator Level", "Bypasses player limit?"],
             style: {
                 head: [],
                 border: []
             }
         })
-
-        tbl.push(...players2D)
         
+        tbl.push(...operators)
+
         const filePath = `temp/${randomUUID()}.txt`
         await fs.writeFile(filePath, tbl.toString(), "utf8")
-        
-        let message = "**Currently whitelisted players:**"
-        await interaction.reply({ content: message, files: [filePath], flags: MessageFlags.Ephemeral })
+            
+        await interaction.reply({ content: "**Currently defined operators**", files: [filePath], flags: MessageFlags.Ephemeral })
 
         await fs.rm(filePath)
     }

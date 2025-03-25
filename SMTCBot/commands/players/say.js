@@ -17,19 +17,24 @@ module.exports = {
         const json = [
             "",
             {"text": "["},
-            {"text": "DISCORD", "color": "blue"},
+            {"text": "Discord", "color": "blue"},
             {"text": "] "},
             {
                 "text": (interaction.member.nickname || interaction.member.displayName),
                 "color": "gray",
                 "underlined": true,
-                "clickEvent":{
+                "clickEvent": {
                     "action": "open_url",
                     "value": `https://discord.com/users/${interaction.member.id}`
                 },
                 "hoverEvent": {
-                    "action":"show_text",
-                    "contents":"Press this to go to the discord user's profile"
+                    "action": "show_text",
+                    "contents":[
+                        "",
+                        {"text": "Press this to go to "},
+                        {"text": (interaction.member.nickname || interaction.member.displayName), "bold":true, "color":"blue"},
+                        {"text":"'s discord profile!"}
+                    ]
                 }
             },
             {"text":`: ${message.replaceAll("\"", "\\\"")}`}
