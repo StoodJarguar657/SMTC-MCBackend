@@ -13,6 +13,7 @@ module.exports = {
     async Init() {
         const commands = await this.GetCommands()
         for(const command of commands) {
+            console.log(`Initializing command \"${command.data.name}\"`)
             command.Init()
         }
     },
