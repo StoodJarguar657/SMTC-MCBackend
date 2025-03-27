@@ -40,6 +40,9 @@ public:
 
 	SERVER_STATE state;
 
+	int socketHandle;
+	bool listeningActive;
+
 	bool initWithFolder(const std::filesystem::path& serverFolder);
 	bool getStatus(bool* isEmpty);
 	bool start();
@@ -60,6 +63,7 @@ private:
 	std::string handeReadFile(const crow::request& req);
 
 	void webServerThread(int webServerThread);
+
 	bool tpcListener();
 
 public:
