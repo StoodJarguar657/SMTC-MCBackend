@@ -65,14 +65,6 @@ void RCON::Packet::deserialize(const char* buffer, int bytesRead) {
 
 bool RCON::init(const std::string& ip, int port) {
 
-#ifdef _WIN32
-    WSADATA wsaData;
-    if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
-        printf("[RCON -> RCON] WSAStartup failed\n");
-        return false;
-    }
-#endif
-
     this->socketHandle = static_cast<int>(socket(AF_INET, SOCK_STREAM, 0));
     if (this->socketHandle < 0) {
         printf("[RCON -> RCON] Socket creation failed\n");
@@ -95,7 +87,6 @@ bool RCON::init(const std::string& ip, int port) {
         return false;
     }
 
-    this->isInit = true;
     return true;
 }
 

@@ -2,27 +2,29 @@
 
 int main() {
 
-
     MCBackend backend;
     
-    MCBackendDesc desc;
-    desc.serverAddress = "127.0.0.1";
-    desc.serverPort = 25565;
-    desc.serverFolder = "C:\\Users\\emanu\\Desktop\\ServerData\\testServer\\";
-    desc.autoStartServer = true;
-    desc.autoStopServer = true;
-    desc.autoStopAfter = 10; // Sec
-    desc.webServerPort = 25576;
-    desc.rconAddr = "127.0.0.1";
-    desc.rconPort = 25575;
+    MCServerDesc testServer;
+    testServer.serverFolder = "C:\\Users\\emanu\\Desktop\\ServerData\\testServer\\";
+    if (!backend.addServer(testServer))
+        return 1;
 
-    if (!backend.start(desc))
-        return false;
+    MCServerDesc testServer1;
+    testServer1.serverFolder = "C:\\Users\\emanu\\Desktop\\ServerData\\testServer1\\";
+    if (!backend.addServer(testServer1))
+        return 1;
+
+    MCServerDesc testServer2;
+    testServer2.serverFolder = "C:\\Users\\emanu\\Desktop\\ServerData\\testServer2\\";
+    if (!backend.addServer(testServer2))
+        return 1;
+
+    if (!backend.initialize(25571))
+        return 1;
 
     while (true) {
         backend.update();
         std::this_thread::sleep_for(std::chrono::seconds(1));
-        printf("update\n");
     }
 
 	return 0;

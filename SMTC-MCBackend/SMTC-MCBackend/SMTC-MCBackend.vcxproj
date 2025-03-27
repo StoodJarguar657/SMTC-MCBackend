@@ -77,7 +77,9 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)SMTC-MCBackend\Libraries\;$(SolutionDir)SMTC-MCBackend\Libraries\Crow;$(SolutionDir)SMTC-MCBackend\Libraries\Asio;$(SolutionDir)SMTC-MCBackend\Libraries\RCON;$(SolutionDir)SMTC-MCBackend\Libraries\Json;$(SolutionDir)SMTC-MCBackend\Libraries\Webserver;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)SMTC-MCBackend\Libraries\;$(SolutionDir)SMTC-MCBackend\Libraries\Crow;$(SolutionDir)SMTC-MCBackend\Libraries\Asio;$(SolutionDir)SMTC-MCBackend\Libraries\RCON;$(SolutionDir)SMTC-MCBackend\Libraries\Json;$(SolutionDir)SMTC-MCBackend\Libraries\MCBackend;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -93,7 +95,9 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)SMTC-MCBackend\Libraries\;$(SolutionDir)SMTC-MCBackend\Libraries\Crow;$(SolutionDir)SMTC-MCBackend\Libraries\Asio;$(SolutionDir)SMTC-MCBackend\Libraries\RCON;$(SolutionDir)SMTC-MCBackend\Libraries\Json;$(SolutionDir)SMTC-MCBackend\Libraries\Webserver;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)SMTC-MCBackend\Libraries\;$(SolutionDir)SMTC-MCBackend\Libraries\Crow;$(SolutionDir)SMTC-MCBackend\Libraries\Asio;$(SolutionDir)SMTC-MCBackend\Libraries\RCON;$(SolutionDir)SMTC-MCBackend\Libraries\Json;$(SolutionDir)SMTC-MCBackend\Libraries\MCBackend;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -110,6 +114,8 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)SMTC-MCBackend\Libraries\;$(SolutionDir)SMTC-MCBackend\Libraries\Crow;$(SolutionDir)SMTC-MCBackend\Libraries\Asio;$(SolutionDir)SMTC-MCBackend\Libraries\RCON;$(SolutionDir)SMTC-MCBackend\Libraries\Json;$(SolutionDir)SMTC-MCBackend\Libraries\MCBackend;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -125,7 +131,9 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)SMTC-MCBackend\Libraries\;$(SolutionDir)SMTC-MCBackend\Libraries\Crow;$(SolutionDir)SMTC-MCBackend\Libraries\Asio;$(SolutionDir)SMTC-MCBackend\Libraries\RCON;$(SolutionDir)SMTC-MCBackend\Libraries\Json;$(SolutionDir)SMTC-MCBackend\Libraries\Webserver;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)SMTC-MCBackend\Libraries\;$(SolutionDir)SMTC-MCBackend\Libraries\Crow;$(SolutionDir)SMTC-MCBackend\Libraries\Asio;$(SolutionDir)SMTC-MCBackend\Libraries\RCON;$(SolutionDir)SMTC-MCBackend\Libraries\Json;$(SolutionDir)SMTC-MCBackend\Libraries\MCBackend;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

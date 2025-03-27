@@ -4,51 +4,65 @@
 #include <crow.h>
 #include <RCON.hpp>
 
-struct MCBackendDesc {
+struct MCServerDesc {
 
-	const char* serverAddress = "127.0.0.1";
-	int serverPort = 0;
 	std::filesystem::path serverFolder;
 
-	bool autoStartServer = true;
+	bool autoStart = true;
 
-	bool autoStopServer = true;
-	int autoStopAfter = 10; // 10 seconds
+	bool autoStop = true;
+	uint16_t autoStopAfter = 10; // Seconds
 
-	int webServerPort = 0;
+	bool checkData();
+};
 
-	const char* rconAddr = "127.0.0.1";
-	int rconPort = 25575; // Default port
+class MCServer {
+public:
+
+	RCON rcon;
+
+	std::string name;
+	std::filesystem::path folder;
+
+	std::filesystem::path startFile;
+	time_t nextServerStart;
+
+	std::string address;
+	uint32_t port;
+
+	uint32_t rconPort;
+
+	bool initWithFolder(const std::filesystem::path& serverFolder);
+	bool getStatus();
+	bool start();
+
 };
 
 class MCBackend {
 private:
 
-	MCBackendDesc initDesc;
-
-	RCON rcon;
+	std::vector<MCServer> servers;
 
 	crow::SimpleApp webServer;
 	time_t nextMessageSendable = 0;
-
-	time_t nextServerStart = 0;
-	std::filesystem::path startFile;
 
 	std::unordered_map<std::string, std::function<std::string(const crow::request& req)>> commands;
 
 	std::string handleRCON(const crow::request& req);
 	std::string handeReadFile(const crow::request& req);
 
-	void webServerThread();
+	void webServerThread(int webServerThread);
 	bool tpcListener();
-
-	bool startServer();
-	bool checkServerStatus(bool* isEmpty);
 
 public:
 
 	MCBackend();
-	bool start(MCBackendDesc initDesc);
+
+	bool addServer(MCServerDesc serverDesc);
+
+	bool initialize(int webServerThread);
+	bool deInitialize();
+
 	void update();
 
 	void createCommand(const char* name, std::function<std::string(const crow::request& req)> fn);

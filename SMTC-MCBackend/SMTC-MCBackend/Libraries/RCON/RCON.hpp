@@ -29,7 +29,6 @@ public:
         void deserialize(const char* buffer, int bytesRead);
     };
 
-    bool isInit = false;
     bool init(const std::string& ip, int port = 25575);
 
     bool authenticate(const std::string& password);
