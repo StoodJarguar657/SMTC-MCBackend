@@ -16,6 +16,12 @@ struct MCServerDesc {
 	bool checkData();
 };
 
+enum SERVER_STATE : uint8_t {
+	OFFLINE,
+	STARTING,
+	ONLINE
+};
+
 class MCServer {
 public:
 
@@ -32,8 +38,10 @@ public:
 
 	uint32_t rconPort;
 
+	SERVER_STATE state;
+
 	bool initWithFolder(const std::filesystem::path& serverFolder);
-	bool getStatus();
+	bool getStatus(bool* isEmpty);
 	bool start();
 
 };

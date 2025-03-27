@@ -100,73 +100,80 @@ bool MCServer::initWithFolder(const std::filesystem::path& serverFolder) {
     return true;
 }
 
-bool MCServer::getStatus() {
-    //static std::vector<uint8_t> packet = { 0xFE, 0x01, 0xFA, 0x00, 0x0B, 0x00, 0x4D, 0x00, 0x43, 0x00, 0x7C, 0x00, 0x50, 0x00, 0x69, 0x00, 0x6E, 0x00, 0x67, 0x00, 0x48, 0x00, 0x6F, 0x00, 0x73, 0x00, 0x74 };
-    //
-    //// Make the packet once
-    //if (packet.size() == 27) {
-    //    
-    //    short hostNameLength = 7 + strlen(this->initDesc.serverAddress) * 2;
-    //    packet.push_back((hostNameLength >> 8) & 0xFF);
-    //    packet.push_back(hostNameLength & 0xFF);
-    //    
-    //    packet.push_back(0x49);
-    //    
-    //    packet.push_back(0x00);
-    //    packet.push_back(strlen(this->initDesc.serverAddress));
-    //    
-    //    size_t serverAddrLen = strlen(this->initDesc.serverAddress);
-    //    for (int i = 0; i < serverAddrLen; i++) {
-    //        packet.push_back(0x00);
-    //        packet.push_back(this->initDesc.serverAddress[i]);
-    //    }
-    //    
-    //    packet.push_back((this->initDesc.serverPort >> 24) & 0xFF);
-    //    packet.push_back((this->initDesc.serverPort >> 16) & 0xFF);
-    //    packet.push_back((this->initDesc.serverPort >> 8) & 0xFF);
-    //    packet.push_back(this->initDesc.serverPort & 0xFF);
-    //}
-    //
-    //SOCKET sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    //if (sock == INVALID_SOCKET) {
-    //    printf("[MCBackend -> checkServerStatus] Failed to create socket\n");
-    //    return false;
-    //}
-    //
-    //sockaddr_in server;
-    //memset(&server, 0, sizeof(server));
-    //server.sin_family = AF_INET;
-    //server.sin_port = htons(this->initDesc.serverPort);
-    //server.sin_addr.s_addr = inet_addr(this->initDesc.serverAddress);
-    //
-    //if (connect(sock, (sockaddr*)&server, sizeof(server)) == SOCKET_ERROR) {
-    //    printf("[MCBackend -> checkServerStatus] Failed to connect\n");
-    //    return false;
-    //}
-    //
-    //if (!send(sock, reinterpret_cast<const char*>(packet.data()), packet.size(), 0) ) {
-    //    printf("[MCBackend -> checkServerStatus] Failed to send data\n");
-    //    return false;
-    //}
-    //
-    //uint8_t buffer[4096];
-    //int bytesReceived = recv(sock, reinterpret_cast<char*>(buffer), sizeof(buffer), 0);
-    //if (bytesReceived == SOCKET_ERROR) {
-    //    printf("[MCBackend -> checkServerStatus] Failed to recieve data\n");
-    //    return false;
-    //}
-    //
-    //// Split at null terminators (splitters)
-    //// The 4th is always the player count
-    //int nullTerminators = 0;
-    //for (size_t i = 0; i < bytesReceived - 1; ++i) {
-    //    if (buffer[i] == 0x00 && buffer[i + 1] == 0x00)
-    //        nullTerminators++;
-    //
-    //    if (nullTerminators == 4) {
-    //        printf("");
-    //    }
-    //}
+bool MCServer::getStatus(bool* isEmpty) {
+    
+    this->state = SERVER_STATE::OFFLINE;
+    
+    static std::vector<uint8_t> packet = { 0xFE, 0x01, 0xFA, 0x00, 0x0B, 0x00, 0x4D, 0x00, 0x43, 0x00, 0x7C, 0x00, 0x50, 0x00, 0x69, 0x00, 0x6E, 0x00, 0x67, 0x00, 0x48, 0x00, 0x6F, 0x00, 0x73, 0x00, 0x74 };
+    
+    // Make the packet once
+    if (packet.size() == 27) {
+        
+        size_t addressLength = this->address.size();
+
+        short hostNameLength = 7 + addressLength * 2;
+        packet.push_back((hostNameLength >> 8) & 0xFF);
+        packet.push_back(hostNameLength & 0xFF);
+        
+        packet.push_back(0x49);
+        
+        packet.push_back(0x00);
+        packet.push_back(addressLength);
+        
+        for (int i = 0; i < addressLength; i++) {
+            packet.push_back(0x00);
+            packet.push_back(this->address[i]);
+        }
+        
+        packet.push_back((this->port >> 24) & 0xFF);
+        packet.push_back((this->port >> 16) & 0xFF);
+        packet.push_back((this->port >> 8) & 0xFF);
+        packet.push_back(this->port & 0xFF);
+    }
+    
+    SOCKET sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (sock == INVALID_SOCKET) {
+        printf("[MCBackend -> checkServerStatus] Failed to create socket\n");
+        return false;
+    }
+    
+    sockaddr_in server;
+    memset(&server, 0, sizeof(server));
+    server.sin_family = AF_INET;
+    server.sin_port = htons(this->port);
+    server.sin_addr.s_addr = inet_addr(this->address.c_str());
+    
+    if (connect(sock, reinterpret_cast<sockaddr*>(&server), sizeof(server)) == SOCKET_ERROR) {
+        printf("[MCBackend -> checkServerStatus] Failed to connect\n");
+        return false;
+    }
+    
+    if (!send(sock, reinterpret_cast<const char*>(packet.data()), packet.size(), 0) ) {
+        printf("[MCBackend -> checkServerStatus] Failed to send data\n");
+        return false;
+    }
+    
+    uint8_t buffer[4096];
+    int bytesReceived = recv(sock, reinterpret_cast<char*>(buffer), sizeof(buffer), 0);
+    if (bytesReceived == SOCKET_ERROR) {
+        printf("[MCBackend -> checkServerStatus] Failed to recieve data\n");
+        return false;
+    }
+    
+    // Split at null terminators (splitters)
+    // The 4th is always the player count
+    int nullTerminators = 0;
+    for (size_t i = 0; i < bytesReceived - 1; ++i) {
+        if (buffer[i] == 0x00 && buffer[i + 1] == 0x00)
+            nullTerminators++;
+    
+        if (nullTerminators == 4) {
+            printf("");
+        }
+    }
+
+    this->state = SERVER_STATE::ONLINE;
+
     return true;
 }
 
@@ -181,6 +188,7 @@ bool MCServer::start() {
         this->folder.string().c_str(),
         &startupInfo,
         &processInfo)) {
+        this->state = SERVER_STATE::STARTING;
         CloseHandle(processInfo.hProcess);
         CloseHandle(processInfo.hThread);
         return true;
@@ -208,56 +216,74 @@ bool MCBackend::tpcListener() {
 
     printf("[MCBackend -> tpcListener] Starting listener\n");
     
-    for (const MCServer& server : this->servers) {
-        int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
-        if (serverSocket == -1) {
-            printf("[MCBackend -> tpcListener] Failed to initialize socket\n");
+    std::vector<int> sockets;
+
+    for (const auto& server : servers) {
+
+        if (server.state != SERVER_STATE::OFFLINE)
+            continue;
+
+        int sock = socket(AF_INET, SOCK_STREAM, 0);
+        if (sock == -1) {
+            printf("[MCBackend -> TCPListener] Failed to create socket for %s:%d\n", server.address.c_str(), server.port);
             continue;
         }
 
-        struct timeval timeout;
-        timeout.tv_sec = 2;
-        timeout.tv_usec = 0;
-        setsockopt(serverSocket, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<const char*>(&timeout), sizeof(timeout));
-        
-        sockaddr_in serverAddress{};
-        serverAddress.sin_family = AF_INET;
-        serverAddress.sin_addr.s_addr = INADDR_ANY;
-        serverAddress.sin_port = htons(25565);
-    
-        if (inet_pton(AF_INET, server.address.c_str(), &serverAddress.sin_addr) <= 0) {
-            printf("[MCBackend -> tpcListener] Invalid IP address format\n");
-            closesocket(serverSocket);
+        sockaddr_in serverAddr{};
+        serverAddr.sin_family = AF_INET;
+        serverAddr.sin_port = htons(server.port);
+        if (inet_pton(AF_INET, server.address.c_str(), &serverAddr.sin_addr) <= 0) {
+            printf("[MCBackend -> TCPListener] Invalid address: %s\n", server.address.c_str());
+            closesocket(sock);
             continue;
         }
 
-        int bindError = bind(serverSocket, reinterpret_cast<struct sockaddr*>(&serverAddress), sizeof(serverAddress));
-        if (bindError < 0) {
-            printf("[MCBackend -> tpcListener] Failed to bind socket\n");
-            closesocket(serverSocket);
+        int opt = 1;
+        setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&opt), sizeof(opt));
+
+        if (bind(sock, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) < 0) {
+            printf("[MCBackend -> TCPListener] Failed to bind %s:%d\n", server.address.c_str(), server.port);
+            closesocket(sock);
             continue;
         }
 
-        if (listen(serverSocket, 5) < 0) {
-            printf("[MCBackend -> tpcListener] Failed to listen\n");
-            closesocket(serverSocket);
+        if (listen(sock, 5) < 0) {
+            printf("[MCBackend -> TCPListener] Failed to listen on %s:%d\n", server.address.c_str(), server.port);
+            closesocket(sock);
             continue;
         }
 
-        while (true) {
+        u_long mode = 1;  // 1 = non-blocking
+        ioctlsocket(sock, FIONBIO, &mode);
 
-            fd_set fds;
-            FD_ZERO(&fds);
-            FD_SET(serverSocket, &fds);
+        sockets.push_back(sock);
+    }
 
-            int selectResult = select(serverSocket + 1, &fds, NULL, NULL, &timeout);
-            if (selectResult <= 0)
-                continue; // Timeout / Error
+    fd_set masterSet, readSet;
+    int maxFd = 0;
 
+    FD_ZERO(&masterSet);
+    for (SOCKET sock : sockets)
+        FD_SET(sock, &masterSet);
+
+    while (true) {
+        readSet = masterSet;
+
+        timeval timeout;
+        timeout.tv_sec = 0;
+        timeout.tv_usec = 100000;
+
+        int activity = select(maxFd + 1, &readSet, NULL, NULL, &timeout);
+        if (activity == SOCKET_ERROR)
+            continue;
+
+        for (SOCKET sock : sockets) {
+            if (!FD_ISSET(sock, &readSet))
+                continue;
 
             sockaddr_in clientAddress{};
             socklen_t clientLength = sizeof(clientAddress);
-            int clientSocket = accept(serverSocket, reinterpret_cast<struct sockaddr*>(&clientAddress), &clientLength);
+            int clientSocket = accept(sock, reinterpret_cast<struct sockaddr*>(&clientAddress), &clientLength);
 
             // Packet structure
             // Length, id, protocol, data
@@ -269,7 +295,7 @@ bool MCBackend::tpcListener() {
             // 
             // 21 -> 34           00         81 06   kubernetes.docker.internal port 2 == login
             // 21 00 81 06 1A 6B 75 62 65 72 6E 65 74 65 73 2E 64 6F 63 6B 65 72 2E 69 6E 74 65 72 6E 61 6C 63 DD 02
-
+            
             char buffer[4096] = { 0 };
             recv(clientSocket, buffer, 4096, 0);
 
@@ -289,17 +315,17 @@ bool MCBackend::tpcListener() {
             memcpy(&port1, buffer + 5 + stringLength, 1);
             memcpy(&port2, buffer + 6 + stringLength, 1);
             uint16_t port = (port1 << 8) | port2;
-
+   
             uint8_t nextState = 0;
             memcpy(&nextState, buffer + 7 + stringLength, 1);
-
+   
             // TODO: for multi server support
             // Check "nextState" 
             switch (nextState) {
-            case 1: { // Status
+                case 1: { // Status
                 // This happens when the server is in the server list
                 // And the user presses refresh
-
+   
                 // Send Server state back (its defo offline rn)
 
                 //{
@@ -323,30 +349,29 @@ bool MCBackend::tpcListener() {
                 //        "favicon" : "data:image/png;base64,<data>",
                 //        "enforcesSecureChat" : false
                 //}
-
-                break;
+   
+                    break;
+                }
+                case 2: { // Login
+                    // This happens when the user is trying to join the server
+                    // Send "Server will start" back since server is offline rn
+   
+                    //const char* serverWillBeStarting = "\x21\x0\x1F\x7B\x22\x74\x65\x78\x74\x22\x3A\x20\x22\x53\x65\x72\x76\x65\x72\x20\x69\x73\x20\x73\x74\x61\x72\x74\x69\x6E\x67\x2E\x22\x7D";
+                    //send(clientSocket, reinterpret_cast<const char*>(serverWillBeStarting), 35, 0);
+                    //closesocket(clientSocket);
+   
+                    break;
+                }
+                case 3: { // Transfer
+                     break;
+                }
             }
-            case 2: { // Login
-                // This happens when the user is trying to join the server
-                // Send "Server will start" back since server is offline rn
-
-
-                break;
-            }
-            case 3: { // Transfer
-                break;
-            }
-            }
-
-
+   
             if (clientSocket < 0) {
                 printf("[MCBackend -> tpcListener] Failed to accept incomming client connection\n");
                 continue;
             }
-
-            const char* serverWillBeStarting = "\x21\x0\x1F\x7B\x22\x74\x65\x78\x74\x22\x3A\x20\x22\x53\x65\x72\x76\x65\x72\x20\x69\x73\x20\x73\x74\x61\x72\x74\x69\x6E\x67\x2E\x22\x7D";
-            send(clientSocket, reinterpret_cast<const char*>(serverWillBeStarting), 35, 0);
-            closesocket(clientSocket);
+   
             break;
         }
     }
@@ -390,10 +415,6 @@ bool MCBackend::addServer(MCServerDesc serverDesc) {
         if (server.folder == otherServer.folder)
             continue;
 
-        if (server.address == otherServer.address) {
-            printf("[MCBackend -> addServer] %s's address is identical to %s's\n", serverName.c_str(), otherServer.folder.filename().string().c_str());
-            return false;
-        }
         if (server.port == otherServer.port) {
             printf("[MCBackend -> addServer] %s's port is identical to %s's\n", serverName.c_str(), otherServer.folder.filename().string().c_str());
             return false;
@@ -432,6 +453,18 @@ bool MCBackend::deInitialize() {
 }
 
 void MCBackend::update() {
+
+    bool oneServerDown = false;
+    for (auto& server : this->servers) {
+
+        bool isEmpty = false;
+        if (!server.getStatus(&isEmpty))
+            oneServerDown = true;
+
+    }
+
+    if (oneServerDown)
+        this->tpcListener();
 
     //// Check the server status
     //// If the rcon failed to init (most likely is the server offline)
