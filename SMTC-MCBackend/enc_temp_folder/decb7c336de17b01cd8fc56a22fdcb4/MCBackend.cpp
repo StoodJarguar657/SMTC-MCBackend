@@ -635,7 +635,7 @@ std::string MCBackend::handleRCON(const crow::request& req) {
         crow::json::wvalue returnValue;
         returnValue["status"] = "failed";
         returnValue["errorCode"] = 8;
-        returnValue["message"] = "Failed to initialize RCON (server offline).";
+        returnValue["message"] = "Failed to initialize RCON.";
         this->nextMessageSendable = curTime + 10; // Block for 10 seconds
         return returnValue.dump();
     }
