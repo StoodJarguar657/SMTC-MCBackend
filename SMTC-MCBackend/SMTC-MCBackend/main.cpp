@@ -1,7 +1,7 @@
 #include <MCBackend.hpp>
 
 int main() {
-
+    
     MCBackend backend;
     
     MCServerDesc testServer;
@@ -9,15 +9,15 @@ int main() {
     if (!backend.addServer(testServer))
         return 1;
 
-    MCServerDesc testServer1;
-    testServer1.serverFolder = "C:\\Users\\emanu\\Desktop\\ServerData\\testServer1\\";
-    if (!backend.addServer(testServer1))
-        return 1;
-
-    MCServerDesc testServer2;
-    testServer2.serverFolder = "C:\\Users\\emanu\\Desktop\\ServerData\\testServer2\\";
-    if (!backend.addServer(testServer2))
-        return 1;
+    //MCServerDesc testServer1;
+    //testServer1.serverFolder = "C:\\Users\\emanu\\Desktop\\ServerData\\testServer1\\";
+    //if (!backend.addServer(testServer1))
+    //    return 1;
+    //
+    //MCServerDesc testServer2;
+    //testServer2.serverFolder = "C:\\Users\\emanu\\Desktop\\ServerData\\testServer2\\";
+    //if (!backend.addServer(testServer2))
+    //    return 1;
 
     if (!backend.initialize(25571))
         return 1;

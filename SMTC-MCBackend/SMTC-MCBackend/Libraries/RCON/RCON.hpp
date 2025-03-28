@@ -14,6 +14,9 @@ private:
 
     std::unordered_map<int, std::string> responses = {};
 
+    std::string ip;
+    int port;
+
 public:
 
     struct Packet {

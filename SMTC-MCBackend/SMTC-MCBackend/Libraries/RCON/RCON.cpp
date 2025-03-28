@@ -65,6 +65,9 @@ void RCON::Packet::deserialize(const char* buffer, int bytesRead) {
 
 bool RCON::init(const std::string& ip, int port) {
 
+    this->ip = ip;
+    this->port = port;
+
     this->socketHandle = static_cast<int>(socket(AF_INET, SOCK_STREAM, 0));
     if (this->socketHandle < 0) {
         printf("[RCON -> RCON] Socket creation failed\n");
@@ -100,6 +103,8 @@ bool RCON::authenticate(const std::string& password) {
     if (send(this->socketHandle, serializedPacket.c_str(), static_cast<int>(serializedPacket.size()), 0) < 0) {
         printf("[RCON -> Authenticate] Failed to send auth packet\n");
         closesocket(this->socketHandle);
+        this->socketHandle = false;
+        this->init(this->ip, this->port);
         return false;
     }
 
@@ -107,7 +112,6 @@ bool RCON::authenticate(const std::string& password) {
     int bytesRead = recv(this->socketHandle, buffer, 4096, 0);
     if (bytesRead <= 0) {
         printf("[RCON -> Authenticate] Failed to receive response\n");
-        closesocket(this->socketHandle);
         return false;
     }
 
@@ -115,10 +119,8 @@ bool RCON::authenticate(const std::string& password) {
     int responseId = 0;
     std::memcpy(&responseId, buffer + 4, sizeof(responseId));
 
-    if (responseId != requestId) {
-        closesocket(this->socketHandle);
+    if (responseId != requestId)
         return false;
-    }
 
     return true;
 }

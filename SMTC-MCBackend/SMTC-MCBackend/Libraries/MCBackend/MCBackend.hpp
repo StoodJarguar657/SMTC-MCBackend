@@ -19,12 +19,14 @@ struct MCServerDesc {
 enum SERVER_STATE : uint8_t {
 	OFFLINE,
 	STARTING,
-	ONLINE
+	ONLINE_EMPTY,
+	ONLINE_USING
 };
 
 class MCServer {
 public:
 
+	MCServerDesc initDesc;
 	RCON rcon;
 
 	std::string name;
@@ -32,6 +34,8 @@ public:
 
 	std::filesystem::path startFile;
 	time_t nextServerStart;
+
+	time_t serverEmptyTime;
 
 	std::string address;
 	uint32_t port;
@@ -44,8 +48,12 @@ public:
 	bool listeningActive;
 
 	bool initWithFolder(const std::filesystem::path& serverFolder);
-	bool getStatus(bool* isEmpty);
+	bool getStatus();
+
 	bool start();
+	bool stop();
+
+	void tpcListener();
 
 };
 
@@ -63,8 +71,6 @@ private:
 	std::string handeReadFile(const crow::request& req);
 
 	void webServerThread(int webServerThread);
-
-	bool tpcListener();
 
 public:
 
