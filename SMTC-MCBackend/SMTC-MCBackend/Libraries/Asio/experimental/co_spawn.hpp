@@ -15,16 +15,16 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
+#include <Asio/detail/config.hpp>
 #include <utility>
-#include "asio/compose.hpp"
-#include "asio/detail/type_traits.hpp"
-#include "asio/experimental/coro.hpp"
-#include "asio/experimental/deferred.hpp"
-#include "asio/experimental/prepend.hpp"
-#include "asio/redirect_error.hpp"
+#include <Asio/compose.hpp>
+#include <Asio/detail/type_traits.hpp>
+#include <Asio/experimental/coro.hpp>
+#include <Asio/experimental/deferred.hpp>
+#include <Asio/experimental/prepend.hpp>
+#include <Asio/redirect_error.hpp>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace experimental {
@@ -182,6 +182,6 @@ co_spawn(coro<void() noexcept, void, Executor> c, CompletionToken&& token)
 } // namespace detail
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif //ASIO_EXPERIMENTAL_CO_SPAWN_HPP

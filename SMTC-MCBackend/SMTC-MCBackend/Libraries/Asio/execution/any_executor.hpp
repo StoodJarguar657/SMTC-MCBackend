@@ -15,26 +15,26 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
+#include <Asio/detail/config.hpp>
 #include <new>
 #include <typeinfo>
-#include "asio/detail/assert.hpp"
-#include "asio/detail/atomic_count.hpp"
-#include "asio/detail/cstddef.hpp"
-#include "asio/detail/executor_function.hpp"
-#include "asio/detail/memory.hpp"
-#include "asio/detail/non_const_lvalue.hpp"
-#include "asio/detail/scoped_ptr.hpp"
-#include "asio/detail/type_traits.hpp"
-#include "asio/detail/throw_exception.hpp"
-#include "asio/execution/bad_executor.hpp"
-#include "asio/execution/blocking.hpp"
-#include "asio/execution/executor.hpp"
-#include "asio/prefer.hpp"
-#include "asio/query.hpp"
-#include "asio/require.hpp"
+#include <Asio/detail/assert.hpp>
+#include <Asio/detail/atomic_count.hpp>
+#include <Asio/detail/cstddef.hpp>
+#include <Asio/detail/executor_function.hpp>
+#include <Asio/detail/memory.hpp>
+#include <Asio/detail/non_const_lvalue.hpp>
+#include <Asio/detail/scoped_ptr.hpp>
+#include <Asio/detail/type_traits.hpp>
+#include <Asio/detail/throw_exception.hpp>
+#include <Asio/execution/bad_executor.hpp>
+#include <Asio/execution/blocking.hpp>
+#include <Asio/execution/executor.hpp>
+#include <Asio/prefer.hpp>
+#include <Asio/query.hpp>
+#include <Asio/require.hpp>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 
@@ -1928,6 +1928,6 @@ struct prefer_member<
 
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // ASIO_EXECUTION_ANY_EXECUTOR_HPP

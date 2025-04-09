@@ -16,7 +16,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
+#include <Asio/detail/config.hpp>
 
 #if defined(ASIO_HAS_EVENTFD)
 
@@ -24,16 +24,16 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #if __GLIBC__ == 2 && __GLIBC_MINOR__ < 8 && !defined(__UCLIBC__)
-# include <asm/unistd.h>
+#include <asm/unistd.h>
 #else // __GLIBC__ == 2 && __GLIBC_MINOR__ < 8 && !defined(__UCLIBC__)
-# include <sys/eventfd.h>
+#include <sys/eventfd.h>
 #endif // __GLIBC__ == 2 && __GLIBC_MINOR__ < 8 && !defined(__UCLIBC__)
-#include "asio/detail/cstdint.hpp"
-#include "asio/detail/eventfd_select_interrupter.hpp"
-#include "asio/detail/throw_error.hpp"
-#include "asio/error.hpp"
+#include <Asio/detail/cstdint.hpp>
+#include <Asio/detail/eventfd_select_interrupter.hpp>
+#include <Asio/detail/throw_error.hpp>
+#include <Asio/error.hpp>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace detail {
@@ -164,7 +164,7 @@ bool eventfd_select_interrupter::reset()
 } // namespace detail
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // defined(ASIO_HAS_EVENTFD)
 

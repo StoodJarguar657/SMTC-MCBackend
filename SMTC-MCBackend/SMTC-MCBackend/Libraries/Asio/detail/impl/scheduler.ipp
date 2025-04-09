@@ -15,22 +15,22 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
+#include <Asio/detail/config.hpp>
 
-#include "asio/detail/concurrency_hint.hpp"
-#include "asio/detail/event.hpp"
-#include "asio/detail/limits.hpp"
-#include "asio/detail/scheduler.hpp"
-#include "asio/detail/scheduler_thread_info.hpp"
-#include "asio/detail/signal_blocker.hpp"
+#include <Asio/detail/concurrency_hint.hpp>
+#include <Asio/detail/event.hpp>
+#include <Asio/detail/limits.hpp>
+#include <Asio/detail/scheduler.hpp>
+#include <Asio/detail/scheduler_thread_info.hpp>
+#include <Asio/detail/signal_blocker.hpp>
 
 #if defined(ASIO_HAS_IO_URING_AS_DEFAULT)
-# include "asio/detail/io_uring_service.hpp"
+#include <Asio/detail/io_uring_service.hpp>
 #else // defined(ASIO_HAS_IO_URING_AS_DEFAULT)
-# include "asio/detail/reactor.hpp"
+#include <Asio/detail/reactor.hpp>
 #endif // defined(ASIO_HAS_IO_URING_AS_DEFAULT)
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace detail {
@@ -670,6 +670,6 @@ scheduler_task* scheduler::get_default_task(asio::execution_context& ctx)
 } // namespace detail
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // ASIO_DETAIL_IMPL_SCHEDULER_IPP

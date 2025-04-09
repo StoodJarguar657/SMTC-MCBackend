@@ -4,6 +4,9 @@
 #include <crow.h>
 #include <RCON.hpp>
 
+#define INVALID_SOCKET -1
+#define SOCKET_ERROR -1
+
 struct MCServerDesc {
 
 	std::filesystem::path serverFolder;
@@ -87,4 +90,4 @@ public:
 
 };
 
-#endif MCBACKEND_HPP
+#endif // MCBACKEND_HPP

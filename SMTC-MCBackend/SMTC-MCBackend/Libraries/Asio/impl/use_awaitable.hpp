@@ -15,11 +15,11 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
-#include "asio/async_result.hpp"
-#include "asio/cancellation_signal.hpp"
+#include <Asio/detail/config.hpp>
+#include <Asio/async_result.hpp>
+#include <Asio/cancellation_signal.hpp>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace detail {
@@ -296,6 +296,6 @@ public:
 
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // ASIO_IMPL_USE_AWAITABLE_HPP

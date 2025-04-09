@@ -12,15 +12,15 @@
 #ifndef ASIO_EXPERIMENTAL_DETAIL_PARTIAL_PROMISE_HPP
 #define ASIO_EXPERIMENTAL_DETAIL_PARTIAL_PROMISE_HPP
 
-#include "asio/detail/config.hpp"
-#include "asio/append.hpp"
-#include "asio/awaitable.hpp"
-#include "asio/experimental/coro_traits.hpp"
+#include <Asio/detail/config.hpp>
+#include <Asio/append.hpp>
+#include <Asio/awaitable.hpp>
+#include <Asio/experimental/coro_traits.hpp>
 
 #if defined(ASIO_HAS_STD_COROUTINE)
-# include <coroutine>
+#include <coroutine>
 #else // defined(ASIO_HAS_STD_COROUTINE)
-# include <experimental/coroutine>
+#include <experimental/coroutine>
 #endif // defined(ASIO_HAS_STD_COROUTINE)
 
 namespace asio {

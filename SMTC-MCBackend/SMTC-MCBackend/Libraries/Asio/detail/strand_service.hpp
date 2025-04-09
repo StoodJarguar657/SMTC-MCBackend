@@ -15,14 +15,14 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
-#include "asio/io_context.hpp"
-#include "asio/detail/mutex.hpp"
-#include "asio/detail/op_queue.hpp"
-#include "asio/detail/operation.hpp"
-#include "asio/detail/scoped_ptr.hpp"
+#include <Asio/detail/config.hpp>
+#include <Asio/io_context.hpp>
+#include <Asio/detail/mutex.hpp>
+#include <Asio/detail/op_queue.hpp>
+#include <Asio/detail/operation.hpp>
+#include <Asio/detail/scoped_ptr.hpp>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace detail {
@@ -134,11 +134,11 @@ private:
 } // namespace detail
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
-#include "asio/detail/impl/strand_service.hpp"
+#include <Asio/detail/impl/strand_service.hpp>
 #if defined(ASIO_HEADER_ONLY)
-# include "asio/detail/impl/strand_service.ipp"
+#include <Asio/detail/impl/strand_service.ipp>
 #endif // defined(ASIO_HEADER_ONLY)
 
 #endif // ASIO_DETAIL_STRAND_SERVICE_HPP

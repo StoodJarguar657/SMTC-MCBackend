@@ -15,20 +15,20 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
-#include "asio/associated_allocator.hpp"
-#include "asio/associated_executor.hpp"
-#include "asio/associated_immediate_executor.hpp"
-#include "asio/detail/initiate_post.hpp"
-#include "asio/detail/initiate_dispatch.hpp"
-#include "asio/detail/op_queue.hpp"
-#include "asio/detail/type_traits.hpp"
-#include "asio/execution/executor.hpp"
-#include "asio/execution/outstanding_work.hpp"
-#include "asio/executor_work_guard.hpp"
-#include "asio/prefer.hpp"
+#include <Asio/detail/config.hpp>
+#include <Asio/associated_allocator.hpp>
+#include <Asio/associated_executor.hpp>
+#include <Asio/associated_immediate_executor.hpp>
+#include <Asio/detail/initiate_post.hpp>
+#include <Asio/detail/initiate_dispatch.hpp>
+#include <Asio/detail/op_queue.hpp>
+#include <Asio/detail/type_traits.hpp>
+#include <Asio/execution/executor.hpp>
+#include <Asio/execution/outstanding_work.hpp>
+#include <Asio/executor_work_guard.hpp>
+#include <Asio/prefer.hpp>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace experimental {
@@ -356,6 +356,6 @@ public:
 } // namespace experimental
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // ASIO_EXPERIMENTAL_DETAIL_CHANNEL_OPERATION_HPP

@@ -15,13 +15,13 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
+#include <Asio/detail/config.hpp>
 #include <cstddef>
 #include <stdexcept>
 #include <typeinfo>
-#include "asio/detail/noncopyable.hpp"
+#include <Asio/detail/noncopyable.hpp>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 
@@ -378,11 +378,11 @@ service_id<Type> execution_context_service_base<Type>::id;
 } // namespace detail
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
-#include "asio/impl/execution_context.hpp"
+#include <Asio/impl/execution_context.hpp>
 #if defined(ASIO_HEADER_ONLY)
-# include "asio/impl/execution_context.ipp"
+#include <Asio/impl/execution_context.ipp>
 #endif // defined(ASIO_HEADER_ONLY)
 
 #endif // ASIO_EXECUTION_CONTEXT_HPP

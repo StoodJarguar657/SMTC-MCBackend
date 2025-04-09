@@ -15,33 +15,33 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
+#include <Asio/detail/config.hpp>
 #include <new>
 #include <tuple>
 #include <variant>
-#include "asio/associated_cancellation_slot.hpp"
-#include "asio/associator.hpp"
-#include "asio/async_result.hpp"
-#include "asio/cancellation_state.hpp"
-#include "asio/detail/composed_work.hpp"
-#include "asio/detail/recycling_allocator.hpp"
-#include "asio/detail/throw_error.hpp"
-#include "asio/detail/type_traits.hpp"
-#include "asio/error.hpp"
+#include <Asio/associated_cancellation_slot.hpp>
+#include <Asio/associator.hpp>
+#include <Asio/async_result.hpp>
+#include <Asio/cancellation_state.hpp>
+#include <Asio/detail/composed_work.hpp>
+#include <Asio/detail/recycling_allocator.hpp>
+#include <Asio/detail/throw_error.hpp>
+#include <Asio/detail/type_traits.hpp>
+#include <Asio/error.hpp>
 
 #if defined(ASIO_HAS_STD_COROUTINE)
-# include <coroutine>
+#include <coroutine>
 #else // defined(ASIO_HAS_STD_COROUTINE)
-# include <experimental/coroutine>
+#include <experimental/coroutine>
 #endif // defined(ASIO_HAS_STD_COROUTINE)
 
 #if defined(ASIO_ENABLE_HANDLER_TRACKING)
 # if defined(ASIO_HAS_SOURCE_LOCATION)
-#  include "asio/detail/source_location.hpp"
+#include <Asio/detail/source_location.hpp>
 # endif // defined(ASIO_HAS_SOURCE_LOCATION)
 #endif // defined(ASIO_ENABLE_HANDLER_TRACKING)
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace experimental {
@@ -1169,6 +1169,6 @@ struct coroutine_traits<void,
 # endif // defined(ASIO_HAS_STD_COROUTINE)
 #endif // !defined(GENERATING_DOCUMENTATION)
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // ASIO_IMPL_EXPERIMENTAL_CO_COMPOSED_HPP

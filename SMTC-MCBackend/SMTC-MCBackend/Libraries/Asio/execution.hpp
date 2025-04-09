@@ -15,19 +15,19 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/execution/allocator.hpp"
-#include "asio/execution/any_executor.hpp"
-#include "asio/execution/bad_executor.hpp"
-#include "asio/execution/blocking.hpp"
-#include "asio/execution/blocking_adaptation.hpp"
-#include "asio/execution/context.hpp"
-#include "asio/execution/context_as.hpp"
-#include "asio/execution/executor.hpp"
-#include "asio/execution/invocable_archetype.hpp"
-#include "asio/execution/mapping.hpp"
-#include "asio/execution/occupancy.hpp"
-#include "asio/execution/outstanding_work.hpp"
-#include "asio/execution/prefer_only.hpp"
-#include "asio/execution/relationship.hpp"
+#include <Asio/execution/allocator.hpp>
+#include <Asio/execution/any_executor.hpp>
+#include <Asio/execution/bad_executor.hpp>
+#include <Asio/execution/blocking.hpp>
+#include <Asio/execution/blocking_adaptation.hpp>
+#include <Asio/execution/context.hpp>
+#include <Asio/execution/context_as.hpp>
+#include <Asio/execution/executor.hpp>
+#include <Asio/execution/invocable_archetype.hpp>
+#include <Asio/execution/mapping.hpp>
+#include <Asio/execution/occupancy.hpp>
+#include <Asio/execution/outstanding_work.hpp>
+#include <Asio/execution/prefer_only.hpp>
+#include <Asio/execution/relationship.hpp>
 
 #endif // ASIO_EXECUTION_HPP

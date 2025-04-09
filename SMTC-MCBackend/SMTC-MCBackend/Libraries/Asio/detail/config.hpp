@@ -32,7 +32,7 @@
 #  include <cstddef>
 # endif // __has_include(<version>)
 #else // defined(__has_include)
-# include <cstddef>
+#include <cstddef>
 #endif // defined(__has_include)
 
 // boostify: non-boost code ends here
@@ -50,8 +50,8 @@
 # define ASIO_DISABLE_BOOST_WORKAROUND 1
 #else // defined(ASIO_STANDALONE)
 // Boost.Config library is available.
-# include <boost/config.hpp>
-# include <boost/version.hpp>
+#include <boost/config.hpp>
+#include <boost/version.hpp>
 # define ASIO_HAS_BOOST_CONFIG 1
 #endif // defined(ASIO_STANDALONE)
 
@@ -115,7 +115,7 @@
 
 // Android platform detection.
 #if defined(__ANDROID__)
-# include <android/api-level.h>
+#include <android/api-level.h>
 #endif // defined(__ANDROID__)
 
 // Always enabled. Retained for backwards compatibility in user code.
@@ -819,12 +819,12 @@
 # endif // !defined(ASIO_HAS_BOOST_CONFIG)
 #endif // !defined(ASIO_HAS_UNISTD_H)
 #if defined(ASIO_HAS_UNISTD_H)
-# include <unistd.h>
+#include <unistd.h>
 #endif // defined(ASIO_HAS_UNISTD_H)
 
 // Linux: epoll, eventfd, timerfd and io_uring.
 #if defined(__linux__)
-# include <linux/version.h>
+#include <linux/version.h>
 # if !defined(ASIO_HAS_EPOLL)
 #  if !defined(ASIO_DISABLE_EPOLL)
 #   if LINUX_VERSION_CODE >= KERNEL_VERSION(2,5,45)

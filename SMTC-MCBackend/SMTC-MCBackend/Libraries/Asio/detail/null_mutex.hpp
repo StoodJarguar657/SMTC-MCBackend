@@ -15,12 +15,12 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
+#include <Asio/detail/config.hpp>
 
-#include "asio/detail/noncopyable.hpp"
-#include "asio/detail/scoped_lock.hpp"
+#include <Asio/detail/noncopyable.hpp>
+#include <Asio/detail/scoped_lock.hpp>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace detail {
@@ -55,6 +55,6 @@ public:
 } // namespace detail
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // ASIO_DETAIL_NULL_MUTEX_HPP

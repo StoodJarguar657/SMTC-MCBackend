@@ -15,28 +15,28 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
+#include <Asio/detail/config.hpp>
 #include <exception>
 #include <new>
 #include <tuple>
-#include "asio/cancellation_signal.hpp"
-#include "asio/cancellation_state.hpp"
-#include "asio/detail/thread_context.hpp"
-#include "asio/detail/thread_info_base.hpp"
-#include "asio/detail/throw_error.hpp"
-#include "asio/detail/type_traits.hpp"
-#include "asio/error.hpp"
-#include "asio/post.hpp"
-#include "asio/system_error.hpp"
-#include "asio/this_coro.hpp"
+#include <Asio/cancellation_signal.hpp>
+#include <Asio/cancellation_state.hpp>
+#include <Asio/detail/thread_context.hpp>
+#include <Asio/detail/thread_info_base.hpp>
+#include <Asio/detail/throw_error.hpp>
+#include <Asio/detail/type_traits.hpp>
+#include <Asio/error.hpp>
+#include <Asio/post.hpp>
+#include <Asio/system_error.hpp>
+#include <Asio/this_coro.hpp>
 
 #if defined(ASIO_ENABLE_HANDLER_TRACKING)
 # if defined(ASIO_HAS_SOURCE_LOCATION)
-#  include "asio/detail/source_location.hpp"
+#include <Asio/detail/source_location.hpp>
 # endif // defined(ASIO_HAS_SOURCE_LOCATION)
 #endif // defined(ASIO_ENABLE_HANDLER_TRACKING)
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace detail {
@@ -1191,6 +1191,6 @@ struct coroutine_traits<asio::awaitable<T, Executor>, Args...>
 # endif // defined(ASIO_HAS_STD_COROUTINE)
 #endif // !defined(GENERATING_DOCUMENTATION)
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // ASIO_IMPL_AWAITABLE_HPP

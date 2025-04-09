@@ -15,12 +15,12 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/associator.hpp"
-#include "asio/detail/handler_cont_helpers.hpp"
-#include "asio/detail/handler_type_requirements.hpp"
-#include "asio/detail/non_const_lvalue.hpp"
+#include <Asio/associator.hpp>
+#include <Asio/detail/handler_cont_helpers.hpp>
+#include <Asio/detail/handler_type_requirements.hpp>
+#include <Asio/detail/non_const_lvalue.hpp>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 
@@ -379,6 +379,6 @@ std::size_t buffered_write_stream<Stream>::copy(
 
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // ASIO_IMPL_BUFFERED_WRITE_STREAM_HPP

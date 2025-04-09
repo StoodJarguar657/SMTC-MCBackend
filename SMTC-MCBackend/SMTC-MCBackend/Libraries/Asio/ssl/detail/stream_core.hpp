@@ -15,17 +15,17 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
+#include <Asio/detail/config.hpp>
 
 #if defined(ASIO_HAS_BOOST_DATE_TIME)
-# include "asio/deadline_timer.hpp"
+#include <Asio/deadline_timer.hpp>
 #else // defined(ASIO_HAS_BOOST_DATE_TIME)
-# include "asio/steady_timer.hpp"
+#include <Asio/steady_timer.hpp>
 #endif // defined(ASIO_HAS_BOOST_DATE_TIME)
-#include "asio/ssl/detail/engine.hpp"
-#include "asio/buffer.hpp"
+#include <Asio/ssl/detail/engine.hpp>
+#include <Asio/buffer.hpp>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace ssl {
@@ -212,6 +212,6 @@ struct stream_core
 } // namespace ssl
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // ASIO_SSL_DETAIL_STREAM_CORE_HPP

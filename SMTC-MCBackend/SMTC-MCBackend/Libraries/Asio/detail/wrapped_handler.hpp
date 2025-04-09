@@ -15,10 +15,10 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/bind_handler.hpp"
-#include "asio/detail/handler_cont_helpers.hpp"
+#include <Asio/detail/bind_handler.hpp>
+#include <Asio/detail/handler_cont_helpers.hpp>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace detail {
@@ -212,6 +212,6 @@ inline bool asio_handler_is_continuation(
 } // namespace detail
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // ASIO_DETAIL_WRAPPED_HANDLER_HPP

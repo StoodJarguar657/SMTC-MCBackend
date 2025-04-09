@@ -15,24 +15,24 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
+#include <Asio/detail/config.hpp>
 #include <iterator>
 #include <utility>
 #include <vector>
-#include "asio/detail/memory.hpp"
-#include "asio/execution/context.hpp"
-#include "asio/execution/executor.hpp"
-#include "asio/execution_context.hpp"
-#include "asio/is_executor.hpp"
-#include "asio/query.hpp"
-#include "asio/registered_buffer.hpp"
+#include <Asio/detail/memory.hpp>
+#include <Asio/execution/context.hpp>
+#include <Asio/execution/executor.hpp>
+#include <Asio/execution_context.hpp>
+#include <Asio/is_executor.hpp>
+#include <Asio/query.hpp>
+#include <Asio/registered_buffer.hpp>
 
 #if defined(ASIO_HAS_IO_URING)
-# include "asio/detail/scheduler.hpp"
-# include "asio/detail/io_uring_service.hpp"
+#include <Asio/detail/scheduler.hpp>
+#include <Asio/detail/io_uring_service.hpp>
 #endif // defined(ASIO_HAS_IO_URING)
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace detail {
@@ -313,6 +313,6 @@ register_buffers(ExecutionContext& ctx,
 
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // ASIO_BUFFER_REGISTRATION_HPP

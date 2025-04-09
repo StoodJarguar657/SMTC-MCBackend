@@ -8,7 +8,7 @@
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#include "coroutine.hpp"
+#include <coroutine.hpp>
 
 #ifndef reenter
 # define reenter(c) ASIO_CORO_REENTER(c)

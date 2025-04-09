@@ -15,17 +15,17 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
-#include "asio/async_result.hpp"
-#include "asio/detail/initiate_post.hpp"
-#include "asio/detail/type_traits.hpp"
-#include "asio/execution_context.hpp"
-#include "asio/execution/blocking.hpp"
-#include "asio/execution/executor.hpp"
-#include "asio/is_executor.hpp"
-#include "asio/require.hpp"
+#include <Asio/detail/config.hpp>
+#include <Asio/async_result.hpp>
+#include <Asio/detail/initiate_post.hpp>
+#include <Asio/detail/type_traits.hpp>
+#include <Asio/execution_context.hpp>
+#include <Asio/execution/blocking.hpp>
+#include <Asio/execution/executor.hpp>
+#include <Asio/is_executor.hpp>
+#include <Asio/require.hpp>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 
@@ -208,6 +208,6 @@ inline auto post(ExecutionContext& ctx,
 
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // ASIO_POST_HPP

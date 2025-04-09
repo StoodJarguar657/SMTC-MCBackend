@@ -15,14 +15,14 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
-#include "asio/buffer.hpp"
-#include "asio/detail/assert.hpp"
+#include <Asio/detail/config.hpp>
+#include <Asio/buffer.hpp>
+#include <Asio/detail/assert.hpp>
 #include <cstddef>
 #include <cstring>
 #include <vector>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace detail {
@@ -121,6 +121,6 @@ private:
 } // namespace detail
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // ASIO_DETAIL_BUFFERED_STREAM_STORAGE_HPP

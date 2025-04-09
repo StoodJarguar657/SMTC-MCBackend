@@ -15,10 +15,10 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
-#include "asio/error_code.hpp"
+#include <Asio/detail/config.hpp>
+#include <Asio/error_code.hpp>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace experimental {
@@ -73,10 +73,10 @@ inline asio::error_code make_error_code(channel_errors e)
 } // namespace experimental
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #if defined(ASIO_HEADER_ONLY)
-# include "asio/experimental/impl/channel_error.ipp"
+#include <Asio/experimental/impl/channel_error.ipp>
 #endif // defined(ASIO_HEADER_ONLY)
 
 #endif // ASIO_EXPERIMENTAL_CHANNEL_ERROR_HPP

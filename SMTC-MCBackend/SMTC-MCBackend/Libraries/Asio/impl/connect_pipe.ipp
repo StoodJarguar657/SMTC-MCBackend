@@ -17,14 +17,14 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
+#include <Asio/detail/config.hpp>
 
 #if defined(ASIO_HAS_PIPE)
 
-#include "asio/connect_pipe.hpp"
+#include <Asio/connect_pipe.hpp>
 
 #if defined(ASIO_HAS_IOCP)
-# include <cstdio>
+#include <cstdio>
 # if _WIN32_WINNT >= 0x601
 #  include <bcrypt.h>
 #  if !defined(ASIO_NO_DEFAULT_LINKED_LIBS)
@@ -34,10 +34,10 @@
 #  endif // !defined(ASIO_NO_DEFAULT_LINKED_LIBS)
 # endif // _WIN32_WINNT >= 0x601
 #else // defined(ASIO_HAS_IOCP)
-# include "asio/detail/descriptor_ops.hpp"
+#include <Asio/detail/descriptor_ops.hpp>
 #endif // defined(ASIO_HAS_IOCP)
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace detail {
@@ -142,7 +142,7 @@ void close_pipe(native_pipe_handle p)
 } // namespace detail
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // defined(ASIO_HAS_PIPE)
 

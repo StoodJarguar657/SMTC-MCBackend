@@ -15,26 +15,26 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/ip/address.hpp"
-#include "asio/ip/address_v4.hpp"
-#include "asio/ip/address_v4_iterator.hpp"
-#include "asio/ip/address_v4_range.hpp"
-#include "asio/ip/address_v6.hpp"
-#include "asio/ip/address_v6_iterator.hpp"
-#include "asio/ip/address_v6_range.hpp"
-#include "asio/ip/bad_address_cast.hpp"
-#include "asio/ip/basic_endpoint.hpp"
-#include "asio/ip/basic_resolver_query.hpp"
-#include "asio/ip/basic_resolver_entry.hpp"
-#include "asio/ip/basic_resolver_iterator.hpp"
-#include "asio/ip/basic_resolver.hpp"
-#include "asio/ip/host_name.hpp"
-#include "asio/ip/network_v4.hpp"
-#include "asio/ip/network_v6.hpp"
-#include "asio/ip/tcp.hpp"
-#include "asio/ip/udp.hpp"
-#include "asio/ip/v6_only.hpp"
-#include "asio/ip/unicast.hpp"
-#include "asio/ip/multicast.hpp"
+#include <Asio/ip/address.hpp>
+#include <Asio/ip/address_v4.hpp>
+#include <Asio/ip/address_v4_iterator.hpp>
+#include <Asio/ip/address_v4_range.hpp>
+#include <Asio/ip/address_v6.hpp>
+#include <Asio/ip/address_v6_iterator.hpp>
+#include <Asio/ip/address_v6_range.hpp>
+#include <Asio/ip/bad_address_cast.hpp>
+#include <Asio/ip/basic_endpoint.hpp>
+#include <Asio/ip/basic_resolver_query.hpp>
+#include <Asio/ip/basic_resolver_entry.hpp>
+#include <Asio/ip/basic_resolver_iterator.hpp>
+#include <Asio/ip/basic_resolver.hpp>
+#include <Asio/ip/host_name.hpp>
+#include <Asio/ip/network_v4.hpp>
+#include <Asio/ip/network_v6.hpp>
+#include <Asio/ip/tcp.hpp>
+#include <Asio/ip/udp.hpp>
+#include <Asio/ip/v6_only.hpp>
+#include <Asio/ip/unicast.hpp>
+#include <Asio/ip/multicast.hpp>
 
 #endif // ASIO_TS_INTERNET_HPP

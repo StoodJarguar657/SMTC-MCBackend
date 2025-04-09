@@ -15,14 +15,14 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
+#include <Asio/detail/config.hpp>
 
 #if defined(ASIO_HAS_STRING_VIEW)
 
 #if defined(ASIO_HAS_STD_STRING_VIEW)
-# include <string_view>
+#include <string_view>
 #elif defined(ASIO_HAS_STD_EXPERIMENTAL_STRING_VIEW)
-# include <experimental/string_view>
+#include <experimental/string_view>
 #else // defined(ASIO_HAS_STD_EXPERIMENTAL_STRING_VIEW)
 # error ASIO_HAS_STRING_VIEW is set but no string_view is available
 #endif // defined(ASIO_HAS_STD_EXPERIMENTAL_STRING_VIEW)

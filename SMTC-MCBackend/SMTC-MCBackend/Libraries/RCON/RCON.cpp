@@ -1,4 +1,4 @@
-#include "RCON.hpp"
+#include <RCON.hpp>
 
 #include <thread>
 #include <cstring>
@@ -80,13 +80,21 @@ bool RCON::init(const std::string& ip, int port) {
 
     if (inet_pton(AF_INET, ip.c_str(), &serverAddress.sin_addr) <= 0) {
         printf("[RCON -> RCON] Invalid address\n");
+    #ifdef _WIN32
         closesocket(this->socketHandle);
+    #else
+        close(this->socketHandle);
+    #endif
         return false;
     }
 
     if (connect(this->socketHandle, reinterpret_cast<sockaddr*>(&serverAddress), sizeof(serverAddress)) < 0) {
         printf("[RCON -> RCON] Connection failed\n");
+    #ifdef _WIN32
         closesocket(this->socketHandle);
+    #else
+        close(this->socketHandle);
+    #endif
         return false;
     }
 
@@ -102,7 +110,11 @@ bool RCON::authenticate(const std::string& password) {
     const std::string& serializedPacket = authPacket.serialize();
     if (send(this->socketHandle, serializedPacket.c_str(), static_cast<int>(serializedPacket.size()), 0) < 0) {
         printf("[RCON -> Authenticate] Failed to send auth packet\n");
+    #ifdef _WIN32
         closesocket(this->socketHandle);
+    #else
+        close(this->socketHandle);
+    #endif
         this->socketHandle = false;
         this->init(this->ip, this->port);
         return false;
@@ -112,6 +124,11 @@ bool RCON::authenticate(const std::string& password) {
     int bytesRead = recv(this->socketHandle, buffer, 4096, 0);
     if (bytesRead <= 0) {
         printf("[RCON -> Authenticate] Failed to receive response\n");
+    #ifdef _WIN32
+        closesocket(this->socketHandle);
+    #else
+        close(this->socketHandle);
+    #endif
         return false;
     }
 
@@ -133,7 +150,11 @@ bool RCON::sendConsoleCommand(const std::string& command, std::string* response)
     const std::string& serializedPacket = consolePacket.serialize();
     if (send(this->socketHandle, serializedPacket.c_str(), static_cast<int>(serializedPacket.size()), 0) < 0) {
         printf("[RCON -> SendConsoleCommand] Failed to send console command\n");
+    #ifdef _WIN32
         closesocket(this->socketHandle);
+    #else
+        close(this->socketHandle);
+    #endif
         return false;
     }
 

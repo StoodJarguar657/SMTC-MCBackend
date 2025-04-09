@@ -17,9 +17,9 @@
 
 #if defined(ASIO_HAS_EPOLL)
 
-#include "asio/detail/scheduler.hpp"
+#include <Asio/detail/scheduler.hpp>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace detail {
@@ -102,7 +102,7 @@ void epoll_reactor::move_timer(timer_queue<Time_Traits>& queue,
 } // namespace detail
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // defined(ASIO_HAS_EPOLL)
 

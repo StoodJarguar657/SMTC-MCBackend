@@ -15,18 +15,18 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
+#include <Asio/detail/config.hpp>
 #include <cstddef>
 #include <vector>
-#include "asio/detail/cstdint.hpp"
-#include "asio/detail/date_time_fwd.hpp"
-#include "asio/detail/limits.hpp"
-#include "asio/detail/op_queue.hpp"
-#include "asio/detail/timer_queue_base.hpp"
-#include "asio/detail/wait_op.hpp"
-#include "asio/error.hpp"
+#include <Asio/detail/cstdint.hpp>
+#include <Asio/detail/date_time_fwd.hpp>
+#include <Asio/detail/limits.hpp>
+#include <Asio/detail/op_queue.hpp>
+#include <Asio/detail/timer_queue_base.hpp>
+#include <Asio/detail/wait_op.hpp>
+#include <Asio/error.hpp>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace detail {
@@ -384,6 +384,6 @@ private:
 } // namespace detail
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // ASIO_DETAIL_TIMER_QUEUE_HPP

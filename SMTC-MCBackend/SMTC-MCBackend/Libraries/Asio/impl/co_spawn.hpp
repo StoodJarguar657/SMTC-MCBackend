@@ -15,18 +15,18 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
-#include "asio/associated_cancellation_slot.hpp"
-#include "asio/awaitable.hpp"
-#include "asio/detail/memory.hpp"
-#include "asio/detail/recycling_allocator.hpp"
-#include "asio/dispatch.hpp"
-#include "asio/execution/outstanding_work.hpp"
-#include "asio/post.hpp"
-#include "asio/prefer.hpp"
-#include "asio/use_awaitable.hpp"
+#include <Asio/detail/config.hpp>
+#include <Asio/associated_cancellation_slot.hpp>
+#include <Asio/awaitable.hpp>
+#include <Asio/detail/memory.hpp>
+#include <Asio/detail/recycling_allocator.hpp>
+#include <Asio/dispatch.hpp>
+#include <Asio/execution/outstanding_work.hpp>
+#include <Asio/post.hpp>
+#include <Asio/prefer.hpp>
+#include <Asio/use_awaitable.hpp>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace detail {
@@ -444,6 +444,6 @@ co_spawn(ExecutionContext& ctx, F&& f, CompletionToken&& token,
 
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // ASIO_IMPL_CO_SPAWN_HPP

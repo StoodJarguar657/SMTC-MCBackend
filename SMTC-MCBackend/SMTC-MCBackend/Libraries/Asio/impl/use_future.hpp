@@ -15,18 +15,18 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
+#include <Asio/detail/config.hpp>
 #include <tuple>
-#include "asio/async_result.hpp"
-#include "asio/detail/memory.hpp"
-#include "asio/dispatch.hpp"
-#include "asio/error_code.hpp"
-#include "asio/execution.hpp"
-#include "asio/packaged_task.hpp"
-#include "asio/system_error.hpp"
-#include "asio/system_executor.hpp"
+#include <Asio/async_result.hpp>
+#include <Asio/detail/memory.hpp>
+#include <Asio/dispatch.hpp>
+#include <Asio/error_code.hpp>
+#include <Asio/execution.hpp>
+#include <Asio/packaged_task.hpp>
+#include <Asio/system_error.hpp>
+#include <Asio/system_executor.hpp>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace detail {
@@ -702,6 +702,6 @@ struct require_member<
 
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // ASIO_IMPL_USE_FUTURE_HPP

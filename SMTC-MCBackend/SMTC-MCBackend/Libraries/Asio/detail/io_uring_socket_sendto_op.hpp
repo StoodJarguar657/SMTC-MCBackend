@@ -15,19 +15,19 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
+#include <Asio/detail/config.hpp>
 
 #if defined(ASIO_HAS_IO_URING)
 
-#include "asio/detail/bind_handler.hpp"
-#include "asio/detail/buffer_sequence_adapter.hpp"
-#include "asio/detail/socket_ops.hpp"
-#include "asio/detail/fenced_block.hpp"
-#include "asio/detail/handler_work.hpp"
-#include "asio/detail/io_uring_operation.hpp"
-#include "asio/detail/memory.hpp"
+#include <Asio/detail/bind_handler.hpp>
+#include <Asio/detail/buffer_sequence_adapter.hpp>
+#include <Asio/detail/socket_ops.hpp>
+#include <Asio/detail/fenced_block.hpp>
+#include <Asio/detail/handler_work.hpp>
+#include <Asio/detail/io_uring_operation.hpp>
+#include <Asio/detail/memory.hpp>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace detail {
@@ -187,7 +187,7 @@ private:
 } // namespace detail
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // defined(ASIO_HAS_IO_URING)
 

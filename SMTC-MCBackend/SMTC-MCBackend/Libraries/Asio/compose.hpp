@@ -15,15 +15,15 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
-#include "asio/associated_executor.hpp"
-#include "asio/async_result.hpp"
-#include "asio/detail/base_from_cancellation_state.hpp"
-#include "asio/detail/composed_work.hpp"
-#include "asio/detail/handler_cont_helpers.hpp"
-#include "asio/detail/type_traits.hpp"
+#include <Asio/detail/config.hpp>
+#include <Asio/associated_executor.hpp>
+#include <Asio/async_result.hpp>
+#include <Asio/detail/base_from_cancellation_state.hpp>
+#include <Asio/detail/composed_work.hpp>
+#include <Asio/detail/handler_cont_helpers.hpp>
+#include <Asio/detail/type_traits.hpp>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace detail {
@@ -314,6 +314,6 @@ auto async_compose(Implementation&& implementation,
 
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // ASIO_COMPOSE_HPP

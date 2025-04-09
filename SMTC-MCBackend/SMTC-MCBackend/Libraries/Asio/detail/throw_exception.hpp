@@ -15,10 +15,10 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
+#include <Asio/detail/config.hpp>
 
 #if defined(ASIO_HAS_BOOST_THROW_EXCEPTION)
-# include <boost/throw_exception.hpp>
+#include <boost/throw_exception.hpp>
 #endif // defined(ASIO_BOOST_THROW_EXCEPTION)
 
 namespace asio {

@@ -15,27 +15,27 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
+#include <Asio/detail/config.hpp>
 #include <tuple>
-#include "asio/associated_allocator.hpp"
-#include "asio/associated_cancellation_slot.hpp"
-#include "asio/associated_executor.hpp"
-#include "asio/async_result.hpp"
-#include "asio/bind_executor.hpp"
-#include "asio/detail/atomic_count.hpp"
-#include "asio/detail/bind_handler.hpp"
-#include "asio/detail/handler_cont_helpers.hpp"
-#include "asio/detail/memory.hpp"
-#include "asio/detail/noncopyable.hpp"
-#include "asio/detail/type_traits.hpp"
-#include "asio/detail/utility.hpp"
-#include "asio/system_error.hpp"
+#include <Asio/associated_allocator.hpp>
+#include <Asio/associated_cancellation_slot.hpp>
+#include <Asio/associated_executor.hpp>
+#include <Asio/async_result.hpp>
+#include <Asio/bind_executor.hpp>
+#include <Asio/detail/atomic_count.hpp>
+#include <Asio/detail/bind_handler.hpp>
+#include <Asio/detail/handler_cont_helpers.hpp>
+#include <Asio/detail/memory.hpp>
+#include <Asio/detail/noncopyable.hpp>
+#include <Asio/detail/type_traits.hpp>
+#include <Asio/detail/utility.hpp>
+#include <Asio/system_error.hpp>
 
 #if defined(ASIO_HAS_BOOST_CONTEXT_FIBER)
-# include <boost/context/fiber.hpp>
+#include <boost/context/fiber.hpp>
 #endif // defined(ASIO_HAS_BOOST_CONTEXT_FIBER)
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace detail {
@@ -1395,6 +1395,6 @@ inline void spawn(ExecutionContext& ctx, Function&& function,
 
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // ASIO_IMPL_SPAWN_HPP

@@ -15,15 +15,15 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
+#include <Asio/detail/config.hpp>
 
-#include "asio/detail/base_from_cancellation_state.hpp"
-#include "asio/detail/handler_tracking.hpp"
-#include "asio/ssl/detail/engine.hpp"
-#include "asio/ssl/detail/stream_core.hpp"
-#include "asio/write.hpp"
+#include <Asio/detail/base_from_cancellation_state.hpp>
+#include <Asio/detail/handler_tracking.hpp>
+#include <Asio/ssl/detail/engine.hpp>
+#include <Asio/ssl/detail/stream_core.hpp>
+#include <Asio/write.hpp>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace ssl {
@@ -371,6 +371,6 @@ struct associator<Associator,
 
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // ASIO_SSL_DETAIL_IO_HPP

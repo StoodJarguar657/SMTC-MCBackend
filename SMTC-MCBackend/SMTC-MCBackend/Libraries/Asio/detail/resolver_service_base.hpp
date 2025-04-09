@@ -15,24 +15,24 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
-#include "asio/error.hpp"
-#include "asio/execution_context.hpp"
-#include "asio/detail/mutex.hpp"
-#include "asio/detail/noncopyable.hpp"
-#include "asio/detail/resolve_op.hpp"
-#include "asio/detail/socket_ops.hpp"
-#include "asio/detail/socket_types.hpp"
-#include "asio/detail/scoped_ptr.hpp"
-#include "asio/detail/thread.hpp"
+#include <Asio/detail/config.hpp>
+#include <Asio/error.hpp>
+#include <Asio/execution_context.hpp>
+#include <Asio/detail/mutex.hpp>
+#include <Asio/detail/noncopyable.hpp>
+#include <Asio/detail/resolve_op.hpp>
+#include <Asio/detail/socket_ops.hpp>
+#include <Asio/detail/socket_types.hpp>
+#include <Asio/detail/scoped_ptr.hpp>
+#include <Asio/detail/thread.hpp>
 
 #if defined(ASIO_HAS_IOCP)
-# include "asio/detail/win_iocp_io_context.hpp"
+#include <Asio/detail/win_iocp_io_context.hpp>
 #else // defined(ASIO_HAS_IOCP)
-# include "asio/detail/scheduler.hpp"
+#include <Asio/detail/scheduler.hpp>
 #endif // defined(ASIO_HAS_IOCP)
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace detail {
@@ -149,10 +149,10 @@ private:
 } // namespace detail
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #if defined(ASIO_HEADER_ONLY)
-# include "asio/detail/impl/resolver_service_base.ipp"
+#include <Asio/detail/impl/resolver_service_base.ipp>
 #endif // defined(ASIO_HEADER_ONLY)
 
 #endif // ASIO_DETAIL_RESOLVER_SERVICE_BASE_HPP

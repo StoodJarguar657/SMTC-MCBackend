@@ -15,19 +15,19 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
+#include <Asio/detail/config.hpp>
 
 #if defined(ASIO_HAS_IOCP)
 
-#include "asio/error.hpp"
-#include "asio/detail/cstdint.hpp"
-#include "asio/detail/handler_alloc_helpers.hpp"
-#include "asio/detail/limits.hpp"
-#include "asio/detail/thread.hpp"
-#include "asio/detail/throw_error.hpp"
-#include "asio/detail/win_iocp_io_context.hpp"
+#include <Asio/error.hpp>
+#include <Asio/detail/cstdint.hpp>
+#include <Asio/detail/handler_alloc_helpers.hpp>
+#include <Asio/detail/limits.hpp>
+#include <Asio/detail/thread.hpp>
+#include <Asio/detail/throw_error.hpp>
+#include <Asio/detail/win_iocp_io_context.hpp>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace detail {
@@ -607,7 +607,7 @@ void win_iocp_io_context::update_timeout()
 } // namespace detail
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // defined(ASIO_HAS_IOCP)
 

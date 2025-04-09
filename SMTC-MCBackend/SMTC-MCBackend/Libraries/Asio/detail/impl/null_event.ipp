@@ -15,14 +15,14 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
+#include <Asio/detail/config.hpp>
 
 #if defined(ASIO_WINDOWS_RUNTIME)
-# include <thread>
+#include <thread>
 #elif defined(ASIO_WINDOWS) || defined(__CYGWIN__)
-# include "asio/detail/socket_types.hpp"
+#include <Asio/detail/socket_types.hpp>
 #else
-# include <unistd.h>
+#include <unistd.h>
 # if defined(__hpux)
 #  include <sys/time.h>
 # endif
@@ -31,7 +31,7 @@
 # endif
 #endif
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace detail {
@@ -69,6 +69,6 @@ void null_event::do_wait_for_usec(long usec)
 } // namespace detail
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // ASIO_DETAIL_IMPL_NULL_EVENT_IPP

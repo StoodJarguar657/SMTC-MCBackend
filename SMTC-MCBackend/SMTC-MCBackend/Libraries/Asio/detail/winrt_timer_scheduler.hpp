@@ -15,32 +15,32 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
+#include <Asio/detail/config.hpp>
 
 #if defined(ASIO_WINDOWS_RUNTIME)
 
 #include <cstddef>
-#include "asio/detail/event.hpp"
-#include "asio/detail/limits.hpp"
-#include "asio/detail/mutex.hpp"
-#include "asio/detail/op_queue.hpp"
-#include "asio/detail/thread.hpp"
-#include "asio/detail/timer_queue_base.hpp"
-#include "asio/detail/timer_queue_set.hpp"
-#include "asio/detail/wait_op.hpp"
-#include "asio/execution_context.hpp"
+#include <Asio/detail/event.hpp>
+#include <Asio/detail/limits.hpp>
+#include <Asio/detail/mutex.hpp>
+#include <Asio/detail/op_queue.hpp>
+#include <Asio/detail/thread.hpp>
+#include <Asio/detail/timer_queue_base.hpp>
+#include <Asio/detail/timer_queue_set.hpp>
+#include <Asio/detail/wait_op.hpp>
+#include <Asio/execution_context.hpp>
 
 #if defined(ASIO_HAS_IOCP)
-# include "asio/detail/win_iocp_io_context.hpp"
+#include <Asio/detail/win_iocp_io_context.hpp>
 #else // defined(ASIO_HAS_IOCP)
-# include "asio/detail/scheduler.hpp"
+#include <Asio/detail/scheduler.hpp>
 #endif // defined(ASIO_HAS_IOCP)
 
 #if defined(ASIO_HAS_IOCP)
-# include "asio/detail/thread.hpp"
+#include <Asio/detail/thread.hpp>
 #endif // defined(ASIO_HAS_IOCP)
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace detail {
@@ -135,11 +135,11 @@ private:
 } // namespace detail
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
-#include "asio/detail/impl/winrt_timer_scheduler.hpp"
+#include <Asio/detail/impl/winrt_timer_scheduler.hpp>
 #if defined(ASIO_HEADER_ONLY)
-# include "asio/detail/impl/winrt_timer_scheduler.ipp"
+#include <Asio/detail/impl/winrt_timer_scheduler.ipp>
 #endif // defined(ASIO_HEADER_ONLY)
 
 #endif // defined(ASIO_WINDOWS_RUNTIME)

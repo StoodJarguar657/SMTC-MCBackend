@@ -15,16 +15,16 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
+#include <Asio/detail/config.hpp>
 
 #if defined(ASIO_HAS_WINDOWS_OVERLAPPED_PTR) \
   || defined(GENERATING_DOCUMENTATION)
 
-#include "asio/detail/noncopyable.hpp"
-#include "asio/detail/win_iocp_overlapped_ptr.hpp"
-#include "asio/io_context.hpp"
+#include <Asio/detail/noncopyable.hpp>
+#include <Asio/detail/win_iocp_overlapped_ptr.hpp>
+#include <Asio/io_context.hpp>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace windows {
@@ -137,7 +137,7 @@ private:
 } // namespace windows
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // defined(ASIO_HAS_WINDOWS_OVERLAPPED_PTR)
        //   || defined(GENERATING_DOCUMENTATION)

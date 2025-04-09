@@ -15,7 +15,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
+#include <Asio/detail/config.hpp>
 
 #if defined(ASIO_WINDOWS_RUNTIME)
 // Empty.
@@ -30,8 +30,8 @@
 #   define ASIO_WSPIAPI_H_DEFINED
 #  endif // !defined(_WSPIAPI_H_)
 # endif // defined(__BORLANDC__)
-# include <winsock2.h>
-# include <ws2tcpip.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
 # if defined(WINAPI_FAMILY)
 #  if ((WINAPI_FAMILY & WINAPI_PARTITION_DESKTOP) != 0)
 #   include <windows.h>
@@ -54,9 +54,9 @@
 #   endif // !defined(ASIO_WINDOWS_APP)
 #  endif // defined(_MSC_VER) || defined(__BORLANDC__)
 # endif // !defined(ASIO_NO_DEFAULT_LINKED_LIBS)
-# include "asio/detail/old_win_sdk_compat.hpp"
+#include <Asio/detail/old_win_sdk_compat.hpp>
 #else
-# include <sys/ioctl.h>
+#include <sys/ioctl.h>
 # if (defined(__MACH__) && defined(__APPLE__)) \
    || defined(__FreeBSD__) || defined(__NetBSD__) \
    || defined(__OpenBSD__) || defined(__linux__) \
@@ -65,34 +65,34 @@
 # elif !defined(__SYMBIAN32__)
 #  include <sys/poll.h>
 # endif
-# include <sys/types.h>
-# include <sys/stat.h>
-# include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 # if defined(__hpux)
 #  include <sys/time.h>
 # endif
 # if !defined(__hpux) || defined(__SELECT)
 #  include <sys/select.h>
 # endif
-# include <sys/socket.h>
-# include <sys/uio.h>
-# include <sys/un.h>
-# include <netinet/in.h>
+#include <sys/socket.h>
+#include <sys/uio.h>
+#include <sys/un.h>
+#include <netinet/in.h>
 # if !defined(__SYMBIAN32__)
 #  include <netinet/tcp.h>
 # endif
-# include <arpa/inet.h>
-# include <netdb.h>
-# include <net/if.h>
-# include <limits.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <net/if.h>
+#include <limits.h>
 # if defined(__sun)
 #  include <sys/filio.h>
 #  include <sys/sockio.h>
 # endif
-# include <signal.h>
+#include <signal.h>
 #endif
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace detail {
@@ -422,6 +422,6 @@ const int always_fail_option = 2;
 } // namespace detail
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // ASIO_DETAIL_SOCKET_TYPES_HPP

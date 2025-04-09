@@ -15,12 +15,12 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/ts/netfwd.hpp"
-#include "asio/ts/executor.hpp"
-#include "asio/ts/io_context.hpp"
-#include "asio/ts/timer.hpp"
-#include "asio/ts/buffer.hpp"
-#include "asio/ts/socket.hpp"
-#include "asio/ts/internet.hpp"
+#include <Asio/ts/netfwd.hpp>
+#include <Asio/ts/executor.hpp>
+#include <Asio/ts/io_context.hpp>
+#include <Asio/ts/timer.hpp>
+#include <Asio/ts/buffer.hpp>
+#include <Asio/ts/socket.hpp>
+#include <Asio/ts/internet.hpp>
 
 #endif // ASIO_TS_NET_HPP

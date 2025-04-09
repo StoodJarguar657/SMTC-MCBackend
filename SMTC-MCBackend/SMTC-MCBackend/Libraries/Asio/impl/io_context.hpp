@@ -15,16 +15,16 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/completion_handler.hpp"
-#include "asio/detail/executor_op.hpp"
-#include "asio/detail/fenced_block.hpp"
-#include "asio/detail/handler_type_requirements.hpp"
-#include "asio/detail/non_const_lvalue.hpp"
-#include "asio/detail/service_registry.hpp"
-#include "asio/detail/throw_error.hpp"
-#include "asio/detail/type_traits.hpp"
+#include <Asio/detail/completion_handler.hpp>
+#include <Asio/detail/executor_op.hpp>
+#include <Asio/detail/fenced_block.hpp>
+#include <Asio/detail/handler_type_requirements.hpp>
+#include <Asio/detail/non_const_lvalue.hpp>
+#include <Asio/detail/service_registry.hpp>
+#include <Asio/detail/throw_error.hpp>
+#include <Asio/detail/type_traits.hpp>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 
@@ -428,6 +428,6 @@ inline asio::io_context& io_context::service::get_io_context()
 
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // ASIO_IMPL_IO_CONTEXT_HPP

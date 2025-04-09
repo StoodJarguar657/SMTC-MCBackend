@@ -4,7 +4,7 @@
 #include <locale>
 #include <unordered_map>
 
-#include "crow/utility.h"
+#include <crow/utility.h>
 
 namespace crow
 {

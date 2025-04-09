@@ -1,10 +1,10 @@
 #pragma once
 #include <array>
-#include "crow/logging.h"
-#include "crow/socket_adaptors.h"
-#include "crow/http_request.h"
-#include "crow/TinySHA1.hpp"
-#include "crow/utility.h"
+#include <crow/logging.h>
+#include <crow/socket_adaptors.h>
+#include <crow/http_request.h>
+#include <crow/TinySHA1.hpp>
+#include <crow/utility.h>
 
 namespace crow // NOTE: Already documented in "crow/app.h"
 {

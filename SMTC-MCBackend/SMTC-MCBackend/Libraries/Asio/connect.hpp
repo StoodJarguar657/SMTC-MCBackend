@@ -15,13 +15,13 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
-#include "asio/async_result.hpp"
-#include "asio/basic_socket.hpp"
-#include "asio/detail/type_traits.hpp"
-#include "asio/error.hpp"
+#include <Asio/detail/config.hpp>
+#include <Asio/async_result.hpp>
+#include <Asio/basic_socket.hpp>
+#include <Asio/detail/type_traits.hpp>
+#include <Asio/error.hpp>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 
@@ -1173,8 +1173,8 @@ auto async_connect(basic_socket<Protocol, Executor>& s,
 
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
-#include "asio/impl/connect.hpp"
+#include <Asio/impl/connect.hpp>
 
 #endif

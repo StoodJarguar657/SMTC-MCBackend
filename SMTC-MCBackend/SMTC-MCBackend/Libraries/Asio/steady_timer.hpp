@@ -15,9 +15,9 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
-#include "asio/basic_waitable_timer.hpp"
-#include "asio/detail/chrono.hpp"
+#include <Asio/detail/config.hpp>
+#include <Asio/basic_waitable_timer.hpp>
+#include <Asio/detail/chrono.hpp>
 
 namespace asio {
 

@@ -15,19 +15,19 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
+#include <Asio/detail/config.hpp>
 
 #if defined(ASIO_HAS_IO_URING)
 
 #include <cstddef>
 #include <sys/eventfd.h>
-#include "asio/detail/io_uring_service.hpp"
-#include "asio/detail/reactor_op.hpp"
-#include "asio/detail/scheduler.hpp"
-#include "asio/detail/throw_error.hpp"
-#include "asio/error.hpp"
+#include <Asio/detail/io_uring_service.hpp>
+#include <Asio/detail/reactor_op.hpp>
+#include <Asio/detail/scheduler.hpp>
+#include <Asio/detail/throw_error.hpp>
+#include <Asio/error.hpp>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace detail {
@@ -907,7 +907,7 @@ io_uring_service::io_object::io_object(bool locking)
 } // namespace detail
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // defined(ASIO_HAS_IO_URING)
 

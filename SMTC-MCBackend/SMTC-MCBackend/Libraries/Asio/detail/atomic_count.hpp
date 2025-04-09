@@ -15,12 +15,12 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
+#include <Asio/detail/config.hpp>
 
 #if !defined(ASIO_HAS_THREADS)
 // Nothing to include.
 #else // !defined(ASIO_HAS_THREADS)
-# include <atomic>
+#include <atomic>
 #endif // !defined(ASIO_HAS_THREADS)
 
 namespace asio {

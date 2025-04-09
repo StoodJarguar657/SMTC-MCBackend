@@ -15,19 +15,19 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
+#include <Asio/detail/config.hpp>
 
 #if !defined(ASIO_NO_TS_EXECUTORS)
 
 #include <new>
 #include <typeinfo>
-#include "asio/detail/cstddef.hpp"
-#include "asio/detail/executor_function.hpp"
-#include "asio/detail/memory.hpp"
-#include "asio/detail/throw_exception.hpp"
-#include "asio/execution_context.hpp"
+#include <Asio/detail/cstddef.hpp>
+#include <Asio/detail/executor_function.hpp>
+#include <Asio/detail/memory.hpp>
+#include <Asio/detail/throw_exception.hpp>
+#include <Asio/execution_context.hpp>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 
@@ -351,11 +351,11 @@ private:
 
 ASIO_USES_ALLOCATOR(asio::executor)
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
-#include "asio/impl/executor.hpp"
+#include <Asio/impl/executor.hpp>
 #if defined(ASIO_HEADER_ONLY)
-# include "asio/impl/executor.ipp"
+#include <Asio/impl/executor.ipp>
 #endif // defined(ASIO_HEADER_ONLY)
 
 #endif // !defined(ASIO_NO_TS_EXECUTORS)

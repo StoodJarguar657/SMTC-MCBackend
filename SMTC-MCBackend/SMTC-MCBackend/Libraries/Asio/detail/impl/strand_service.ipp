@@ -15,11 +15,11 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
-#include "asio/detail/call_stack.hpp"
-#include "asio/detail/strand_service.hpp"
+#include <Asio/detail/config.hpp>
+#include <Asio/detail/call_stack.hpp>
+#include <Asio/detail/strand_service.hpp>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace detail {
@@ -197,6 +197,6 @@ void strand_service::do_complete(void* owner, operation* base,
 } // namespace detail
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
 #endif // ASIO_DETAIL_IMPL_STRAND_SERVICE_IPP

@@ -15,20 +15,20 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "asio/detail/config.hpp"
+#include <Asio/detail/config.hpp>
 
 #if defined(ASIO_HAS_CO_AWAIT) || defined(GENERATING_DOCUMENTATION)
 
 #if defined(ASIO_HAS_STD_COROUTINE)
-# include <coroutine>
+#include <coroutine>
 #else // defined(ASIO_HAS_STD_COROUTINE)
-# include <experimental/coroutine>
+#include <experimental/coroutine>
 #endif // defined(ASIO_HAS_STD_COROUTINE)
 
 #include <utility>
-#include "asio/any_io_executor.hpp"
+#include <Asio/any_io_executor.hpp>
 
-#include "asio/detail/push_options.hpp"
+#include <Asio/detail/push_options.hpp>
 
 namespace asio {
 namespace detail {
@@ -133,9 +133,9 @@ private:
 
 } // namespace asio
 
-#include "asio/detail/pop_options.hpp"
+#include <Asio/detail/pop_options.hpp>
 
-#include "asio/impl/awaitable.hpp"
+#include <Asio/impl/awaitable.hpp>
 
 #endif // defined(ASIO_HAS_CO_AWAIT) || defined(GENERATING_DOCUMENTATION)
 
