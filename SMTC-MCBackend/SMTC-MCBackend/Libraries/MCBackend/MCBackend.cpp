@@ -3,21 +3,92 @@
 #include <json.hpp>
 #include <RCON.hpp>
 
+#ifdef _WIN32
+#define closesocket closesocket;
+#else
+#define closesocket close;
+#endif
+
+class Packet {
+private:
+    std::vector<uint8_t> data;
+
+public:
+    uint8_t packetId = 0;
+
+    void addVarInt(int32_t value) {
+        do {
+            uint8_t temp = value & 0b01111111;
+            value >>= 7;
+            if (value != 0)
+                temp |= 0b10000000;
+            data.push_back(temp);
+        } while (value != 0);
+    }
+
+    void addString(const std::string& str) {
+        addVarInt(static_cast<int32_t>(str.length())); // VarInt length
+        data.insert(data.end(), str.begin(), str.end()); // Raw UTF-8
+    }
+
+    void addUShort(uint16_t value) {
+        data.push_back(static_cast<uint8_t>((value >> 8) & 0xFF)); // High byte
+        data.push_back(static_cast<uint8_t>(value & 0xFF));        // Low byte
+    }
+
+    void addByte(uint8_t byte) {
+        data.push_back(byte);
+    }
+
+    void setPacketId(uint8_t id) {
+        packetId = id;
+    }
+
+    std::vector<uint8_t> build() {
+        std::vector<uint8_t> finalPacket;
+
+        std::vector<uint8_t> packetData;
+        packetData.push_back(packetId); // Packet ID (usually VarInt but mostly fits in 1 byte)
+        packetData.insert(packetData.end(), data.begin(), data.end());
+
+        // Prepend full packet length as VarInt
+        std::vector<uint8_t> lengthPrefix;
+        int32_t length = static_cast<int32_t>(packetData.size());
+        do {
+            uint8_t temp = length & 0b01111111;
+            length >>= 7;
+            if (length != 0)
+                temp |= 0b10000000;
+            lengthPrefix.push_back(temp);
+        } while (length != 0);
+
+        finalPacket.insert(finalPacket.end(), lengthPrefix.begin(), lengthPrefix.end());
+        finalPacket.insert(finalPacket.end(), packetData.begin(), packetData.end());
+
+        return finalPacket;
+    }
+
+    const uint8_t* getData() {
+        return build().data();
+    }
+
+    size_t getSize() {
+        return build().size();
+    }
+};
+
+
 bool MCServerDesc::checkData() {
     
     if (!std::filesystem::exists(this->serverFolder)) {
-        printf("[MCServerDesc -> checkData] serverFolder doesnt exist\n");
+        printf("[MCServerDesc -> checkData] serverFolder doesnt exist %s\n", this->serverFolder.string().c_str());
         return false;
     }
-
-    printf("[MCServerDesc -> checkData] serverFolder: %s\n", this->serverFolder.string().c_str());
 
     if (!std::filesystem::exists(this->serverFolder / "server.properties")) {
         printf("[MCServerDesc -> checkData] server.properties doesnt exist, run the server once for them to generate\n");
         return false;
     }
-
-    printf("[MCServerDesc -> checkData] server.properties exists\n");
 
     return true;
 }
@@ -105,15 +176,10 @@ bool MCServer::initWithFolder(const std::filesystem::path& serverFolder) {
         return false;
     }
 
-    printf("[MCServer -> initWithFolder] server-ip: %s\n", this->address.c_str());
-    printf("[MCServer -> initWithFolder] server-port: %d\n", this->port);
-    printf("[MCServer -> initWithFolder] rconPort: %d\n", this->rconPort);
-
     return true;
 }
 
 bool MCServer::getStatus() {
-    printf("[MCServer -> getStatus] Getting status for %s\n", this->name.c_str());
     static std::vector<uint8_t> packet = { 0xFE, 0x01, 0xFA, 0x00, 0x0B, 0x00, 0x4D, 0x00, 0x43, 0x00, 0x7C, 0x00, 0x50, 0x00, 0x69, 0x00, 0x6E, 0x00, 0x67, 0x00, 0x48, 0x00, 0x6F, 0x00, 0x73, 0x00, 0x74 };
 
     // Make the packet once
@@ -155,11 +221,7 @@ bool MCServer::getStatus() {
 
     if (connect(this->socketHandle, reinterpret_cast<sockaddr*>(&server), sizeof(server)) == SOCKET_ERROR) {
         printf("[MCServer -> getStatus] Failed to connect\n");
-    #ifdef _WIN32
         closesocket(this->socketHandle);
-    #else
-        close(this->socketHandle);
-    #endif
         this->socketHandle = 0;
 
         if (this->state != SERVER_STATE::STARTING)
@@ -170,11 +232,7 @@ bool MCServer::getStatus() {
 
     if (!send(this->socketHandle, reinterpret_cast<const char*>(packet.data()), packet.size(), 0)) {
         printf("[MCServer -> getStatus] Failed to send data\n");
-    #ifdef _WIN32
         closesocket(this->socketHandle);
-    #else
-        close(this->socketHandle);
-    #endif
         this->socketHandle = 0;
 
         if (this->state != SERVER_STATE::STARTING)
@@ -187,11 +245,7 @@ bool MCServer::getStatus() {
     int bytesRecieved = recv(this->socketHandle, reinterpret_cast<char*>(buffer), sizeof(buffer), 0);
     if (bytesRecieved == SOCKET_ERROR) {
         printf("[MCServer -> getStatus] Failed to recieve data\n");
-    #ifdef _WIN32
         closesocket(this->socketHandle);
-    #else
-        close(this->socketHandle);
-    #endif
         this->socketHandle = 0;
 
         if (this->state != SERVER_STATE::STARTING)
@@ -246,11 +300,7 @@ bool MCServer::getStatus() {
         endPos = readBuf(startPos);
     }
 
-    #ifdef _WIN32
     closesocket(this->socketHandle);
-    #else
-    close(this->socketHandle);
-    #endif
     this->socketHandle = 0;
 
     return true;
@@ -285,31 +335,21 @@ bool MCServer::start() {
 
     pid_t processId = fork();
     if (processId == 0) {
-        // Child process
-        printf("[MCServer -> start] Starting child process with path: %s\n", filePath.c_str());
-
         if (chdir(this->startFile.parent_path().string().c_str()) != 0) {
             perror("[MCServer -> start] Failed to change working directory");
-            exit(1);  // Exit child process if the directory change fails
+            exit(1);
         }
 
-        // Arguments for execvp
         char* args[] = { const_cast<char*>(filePath.c_str()), NULL };
         
-        // Execute the process
         if (execvp(args[0], args) == -1) {
-            // If execvp fails, print the error and return false
             perror("[MCServer -> start] Failed to start server");
             return false;
         }
     } else if (processId > 0) {
-        // Parent process
-        printf("[MCServer -> start] Server started in separate process with PID: %d\n", processId);
         this->state = SERVER_STATE::STARTING;
         return true;
     } else {
-        // Fork failed
-        perror("[MCServer -> start] Failed to fork process");
         return false;
     }
     #endif
@@ -373,11 +413,7 @@ void MCServer::tpcListener() {
         serverAddr.sin_port = htons(this->port);
         if (inet_pton(AF_INET, this->address.c_str(), &serverAddr.sin_addr) <= 0) {
             printf("[MCServer -> tpcListener] Invalid address: %s\n", this->address.c_str());
-    #ifdef _WIN32
             closesocket(this->socketHandle);
-    #else
-            close(this->socketHandle);
-    #endif
             this->socketHandle = 0;
             return;
         }
@@ -392,22 +428,14 @@ void MCServer::tpcListener() {
 
         if (bind(this->socketHandle, reinterpret_cast<struct sockaddr*>(&serverAddr), sizeof(serverAddr)) < 0) {
             printf("[MCServer -> tpcListener] Failed to bind %s:%d\n", this->address.c_str(), this->port);
-    #ifdef _WIN32
             closesocket(this->socketHandle);
-    #else
-            close(this->socketHandle);
-    #endif
             this->socketHandle = 0;
             return;
         }
 
         if (listen(this->socketHandle, 5) < 0) {
             printf("[MCServer -> tpcListener] Failed to listen on %s:%d\n", this->address.c_str(), this->port);
-    #ifdef _WIN32
             closesocket(this->socketHandle);
-    #else
-            close(this->socketHandle);
-    #endif
             this->socketHandle = 0;
             return;
         }
@@ -441,18 +469,13 @@ void MCServer::tpcListener() {
 
     if (activity == SOCKET_ERROR) {
         printf("[MCServer -> tpcListener] Failed to select\n");
-    #ifdef _WIN32
         closesocket(this->socketHandle);
-    #else
-        close(this->socketHandle);
-    #endif
         this->socketHandle = 0;
         return;
     }
 
     if (activity <= 0 || !FD_ISSET(this->socketHandle, &readSet))
         return;
-    printf("[MCServer -> tpcListener] Activity2: %d\n", activity);
 
     // Ensure non-blocking mode (remove redundant blocking setting if not needed)
     #ifdef _WIN32
@@ -476,11 +499,7 @@ void MCServer::tpcListener() {
 
     char buffer[4096] = { 0 };
     if (recv(clientSocket, buffer, 4096, 0) == -1) {
-    #ifdef _WIN32
         closesocket(clientSocket);
-    #else
-        close(clientSocket);
-    #endif
         return;
     }
 
@@ -500,26 +519,64 @@ void MCServer::tpcListener() {
 
     uint8_t nextState = 0;
     memcpy(&nextState, buffer + 7 + stringLength, 1);
+    printf("[MCServer -> tpcListener] Activity2: %d\n", nextState);
 
     // TODO: for multi-server support
     // Check "nextState"
     switch (nextState) {
         case 1: { // Status
+
             // This happens when the server is in the server list
             // And the user presses refresh
+            Packet packet;
+            packet.setPacketId(0x00);
+
+            std::string jsonMessage = R"({
+    "version":{"name":"0","protocol":0},
+    "players":{"max":0,"online":0},
+    "description":{"text":")";
+            
+            switch (this->state) {
+                case SERVER_STATE::OFFLINE: {
+                    jsonMessage += this->name + " [OFFLINE]";
+                    break;
+                }
+                case SERVER_STATE::STARTING: {
+                    jsonMessage += this->name + " [STARTING]";
+                    break;
+                }
+            }
+
+            jsonMessage += "\"}\n}";
+
+            packet.addString(jsonMessage);
+            
+            const std::vector<uint8_t>& bytes = packet.build();
+            send(clientSocket, reinterpret_cast<const char*>(bytes.data()), bytes.size(), 0);
+
+            closesocket(clientSocket);
+
             break;
         }
         case 2: { // Login
             // This happens when the user is trying to join the server
             // Send "Server will start" back since server is offline rn <- cant figure this out
-    #ifdef _WIN32
-            closesocket(this->socketHandle);
-    #else
-            close(this->socketHandle);
-    #endif
-            this->socketHandle = 0;
             this->listeningActive = false;
             printf("[MCBackend -> tpcListener] Started server on %s:%d\n", this->address.c_str(), this->port);
+
+            Packet packet;
+            packet.setPacketId(0x00);
+
+            std::string jsonMsg = R"({"text":"Server will start","color":"green"})";
+            packet.addString(jsonMsg);
+
+            const std::vector<uint8_t>& bytes = packet.build();
+            send(clientSocket, reinterpret_cast<const char*>(bytes.data()), bytes.size(), 0);
+
+            closesocket(clientSocket);
+
+            closesocket(this->socketHandle);
+            this->socketHandle = 0;
 
             if (!this->start())
                 break;
@@ -530,12 +587,6 @@ void MCServer::tpcListener() {
             break;
         }
     }
-
-    #ifdef _WIN32
-    closesocket(clientSocket);
-    #else
-    close(clientSocket);
-    #endif
 }
 
 void MCBackend::webServerThread(int webServerThread) {
@@ -620,7 +671,6 @@ bool MCBackend::deInitialize() {
 void MCBackend::update() {
 
     for (auto& server : this->servers) {
-
 
         if (server.listeningActive) {
             server.tpcListener();
