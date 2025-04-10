@@ -1,12 +1,9 @@
 #ifndef MCBACKEND_HPP
 #define MCBACKEND_HPP
 
-#include <ctime>
+#include <thread>
 #include <crow.h>
 #include <RCON.hpp>
-
-#define INVALID_SOCKET -1
-#define SOCKET_ERROR -1
 
 enum SERVER_DESC_START : uint8_t {
 	START_NONE,
@@ -34,6 +31,7 @@ struct MCServerDesc {
 enum SERVER_STATE : uint8_t {
 	OFFLINE,
 	STARTING,
+	STOPPING,
 	ONLINE_EMPTY,
 	ONLINE_USING
 };
@@ -42,22 +40,23 @@ class MCServer {
 public:
 
 	MCServerDesc initDesc;
-	RCON rcon;
 
 	std::string name;
-	uint32_t playerCount;
 	SERVER_STATE state;
-	bool statusFailed;
+
+	int playerCount;
+	time_t lastPlayerActivity;
+
+	RCON rcon;
 	
 	std::filesystem::path folder;
 	std::filesystem::path startFile;
 
+	std::string rawAddress;
 	std::string address;
+
 	uint32_t port;
 	uint32_t rconPort;
-
-	int socketHandle;
-	time_t lastPlayerActivity;
 
 	bool initWithFolder(const std::filesystem::path& serverFolder);
 	bool getStatus();
@@ -65,17 +64,20 @@ public:
 	bool start();
 	bool stop();
 
-	void tpcListener();
+	bool tpcListener();
+
+	void update();
 
 };
 
 class MCBackend {
 private:
 
-	std::vector<MCServer> servers;
+	std::unordered_map<std::string, std::pair<std::thread, MCServer>> servers;
 
 	crow::SimpleApp webServer;
 	time_t nextMessageSendable = 0;
+	bool wantsShutdown = false;
 
 	std::unordered_map<std::string, std::function<std::string(const crow::request& req)>> commands;
 
@@ -88,12 +90,10 @@ public:
 
 	MCBackend();
 
-	bool addServer(MCServerDesc serverDesc);
+	bool addServer(MCServerDesc* serverDesc);
 
 	bool initialize(int webServerThread);
 	bool deInitialize();
-
-	void update();
 
 	void createCommand(const char* name, std::function<std::string(const crow::request& req)> fn);
 

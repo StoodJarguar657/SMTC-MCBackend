@@ -1,3 +1,4 @@
+#include "pch.h"
 #include <RCON.hpp>
 
 #include <thread>
@@ -145,38 +146,45 @@ bool RCON::sendConsoleCommand(const std::string& command, std::string* response)
         return false;
     }
 
-    // Alloc full buffer
-    char* fullPacketBuffer = new char[4096];
-    size_t fullPacketBufSize = 4096;
-    size_t packetBufOffset = 0;
+    char* packetBuffer = nullptr;
+    int packetBufSize = 0;
 
     while (true) {
 
-        // Read some data
         char tempBuffer[1024] = { 0 };
-        size_t bytesRead = recv(this->socketHandle, tempBuffer, 1024, 0);
+        int bytesRead = recv(this->socketHandle, tempBuffer, 1024, 0);
 
-        // Copy to full buffer
-        memcpy(fullPacketBuffer + packetBufOffset, tempBuffer, bytesRead);
-        packetBufOffset += bytesRead;
-
-        // If buffer to small, increase size
-        if ((packetBufOffset + 1024) > fullPacketBufSize) {
-            char* newBuf = new char[packetBufOffset + 1024];
-            fullPacketBufSize = packetBufOffset + 1024;
-            memcpy(newBuf, fullPacketBuffer, packetBufOffset);
-            delete[] fullPacketBuffer;
-            fullPacketBuffer = newBuf;
+        if (bytesRead == -1) {
+            delete[] packetBuffer;
+            return -1;
         }
 
-        if (bytesRead < 1024)
+        // Allocate new buffer with updated size
+        char* newBuf = new char[packetBufSize + bytesRead];
+
+        // Copy the old data into the new buffer
+        if (packetBuffer != nullptr)
+            memcpy(newBuf, packetBuffer, packetBufSize);
+
+        // Copy the new data into the new buffer
+        memcpy(newBuf + packetBufSize, tempBuffer, bytesRead);
+
+        // Update the packet buffer pointer
+        delete[] packetBuffer;  // Free old memory
+        packetBuffer = newBuf;   // Point to the new buffer
+
+        // Update the buffer size
+        packetBufSize += bytesRead;
+
+        // If less than 1024 bytes were read, we're done
+        if (bytesRead != 1024)
             break;
     }
 
     Packet responsePacket;
-    responsePacket.deserialize(fullPacketBuffer, static_cast<int>(packetBufOffset));
+    responsePacket.deserialize(packetBuffer, static_cast<int>(packetBufSize));
 
-    delete[] fullPacketBuffer;
+    delete[] packetBuffer;
 
     *response = responsePacket.payload;
 
