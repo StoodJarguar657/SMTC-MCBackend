@@ -3,10 +3,9 @@
 #include <json.hpp>
 #include <RCON.hpp>
 
-#ifdef _WIN32
-#define closesocket closesocket;
-#else
+#ifndef _WIN32
 #define closesocket close;
+#define SD_SEND SHUT_RDWR
 #endif
 
 class Packet {
@@ -76,7 +75,6 @@ public:
         return build().size();
     }
 };
-
 
 bool MCServerDesc::checkData() {
     
@@ -180,38 +178,20 @@ bool MCServer::initWithFolder(const std::filesystem::path& serverFolder) {
 }
 
 bool MCServer::getStatus() {
-    static std::vector<uint8_t> packet = { 0xFE, 0x01, 0xFA, 0x00, 0x0B, 0x00, 0x4D, 0x00, 0x43, 0x00, 0x7C, 0x00, 0x50, 0x00, 0x69, 0x00, 0x6E, 0x00, 0x67, 0x00, 0x48, 0x00, 0x6F, 0x00, 0x73, 0x00, 0x74 };
 
-    // Make the packet once
-    if (packet.size() == 27) {
-
-        size_t addressLength = this->address.size();
-
-        short hostNameLength = 7 + addressLength * 2;
-        packet.push_back((hostNameLength >> 8) & 0xFF);
-        packet.push_back(hostNameLength & 0xFF);
-
-        packet.push_back(0x49);
-
-        packet.push_back(0x00);
-        packet.push_back(addressLength);
-
-        for (int i = 0; i < addressLength; i++) {
-            packet.push_back(0x00);
-            packet.push_back(this->address[i]);
-        }
-
-        packet.push_back((this->port >> 24) & 0xFF);
-        packet.push_back((this->port >> 16) & 0xFF);
-        packet.push_back((this->port >> 8) & 0xFF);
-        packet.push_back(this->port & 0xFF);
-    }
+    auto fail = [this](const std::string& errorMsg) {
+        printf("[MCServer -> getStatus] %s\n", errorMsg.c_str());
+        shutdown(this->socketHandle, SD_SEND);
+        closesocket(this->socketHandle);
+        this->socketHandle = 0;
+        if (this->state != SERVER_STATE::STARTING)
+            this->state = SERVER_STATE::OFFLINE;
+        return false;
+    };
 
     this->socketHandle = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if (this->socketHandle == INVALID_SOCKET) {
-        printf("[MCServer -> getStatus] Failed to create socket\n");
-        return false;
-    }
+    if (this->socketHandle == INVALID_SOCKET)
+        return fail("Failed to create socket");
 
     sockaddr_in server;
     memset(&server, 0, sizeof(server));
@@ -219,87 +199,54 @@ bool MCServer::getStatus() {
     server.sin_port = htons(this->port);
     server.sin_addr.s_addr = inet_addr(this->address.c_str());
 
-    if (connect(this->socketHandle, reinterpret_cast<sockaddr*>(&server), sizeof(server)) == SOCKET_ERROR) {
-        printf("[MCServer -> getStatus] Failed to connect\n");
-        closesocket(this->socketHandle);
-        this->socketHandle = 0;
+    if (connect(this->socketHandle, reinterpret_cast<sockaddr*>(&server), sizeof(server)) == SOCKET_ERROR)
+        return fail("Failed to connect");
 
-        if (this->state != SERVER_STATE::STARTING)
-            this->state = SERVER_STATE::OFFLINE;
+    Packet handshake;
+    handshake.setPacketId(0x00);
+    handshake.addVarInt(0);
+    handshake.addString(this->address);
+    handshake.addUShort(this->port);
+    handshake.addVarInt(1);
+    const std::vector<uint8_t>& packet = handshake.build();
+    if (!send(this->socketHandle, reinterpret_cast<const char*>(packet.data()), packet.size(), 0))
+        return fail("Failed to send data");
 
-        return false;
-    }
+    Packet statusRequest;
+    statusRequest.setPacketId(0x00);
+    const std::vector<uint8_t>& statusBytes = statusRequest.build();
+    if (!send(this->socketHandle, reinterpret_cast<const char*>(statusBytes.data()), statusBytes.size(), 0))
+        return fail("Failed to send data");
 
-    if (!send(this->socketHandle, reinterpret_cast<const char*>(packet.data()), packet.size(), 0)) {
-        printf("[MCServer -> getStatus] Failed to send data\n");
-        closesocket(this->socketHandle);
-        this->socketHandle = 0;
-
-        if (this->state != SERVER_STATE::STARTING)
-            this->state = SERVER_STATE::OFFLINE;
-
-        return false;
-    }
-
-    uint8_t buffer[4096];
+    uint8_t buffer[16384];
     int bytesRecieved = recv(this->socketHandle, reinterpret_cast<char*>(buffer), sizeof(buffer), 0);
-    if (bytesRecieved == SOCKET_ERROR) {
-        printf("[MCServer -> getStatus] Failed to recieve data\n");
-        closesocket(this->socketHandle);
-        this->socketHandle = 0;
+    if (bytesRecieved == SOCKET_ERROR)
+        return fail("Failed to recieve data");
 
-        if (this->state != SERVER_STATE::STARTING)
-            this->state = SERVER_STATE::OFFLINE;
+    char* rawBufPtr = reinterpret_cast<char*>(buffer);
+    const nlohmann::json& json = nlohmann::json::parse(std::string(rawBufPtr + 5, bytesRecieved - 5));
+    if (json.empty())
+        return fail("Failed to read json response");
 
-        return false;
-    }
+    const auto& players = json.find("players");
+    if (players == json.end() || !players->is_object())
+        return fail("Failed to retrieve online player count");
 
-    auto readBuf = [&](size_t off) -> size_t {
-        for (size_t i = off; i < bytesRecieved - 2; i += 2) {
-            if (buffer[i] != 0x00 || buffer[i + 1] != 0x00)
-                continue;
-            return i + 2;
-        }
-        return 0;
-    };
+    const auto& online = players->find("online");
+    if (online == players->end() || !online->is_number_integer())
+        return fail("Failed to retrieve online player count");
+    
+    uint32_t newPlayerCount = online->get<int>();
+    if (this->playerCount != 0 && newPlayerCount == 0)
+        this->lastPlayerActivity = time(nullptr);
+    this->playerCount = newPlayerCount;
 
-    size_t startPos = 0;
-    size_t endPos = readBuf(startPos);
-    size_t count = 0;
+    if (this->playerCount > 0)
+        this->state = SERVER_STATE::ONLINE_USING;
+    else
+        this->state = SERVER_STATE::ONLINE_EMPTY;
 
-    while (endPos != 0) {
-        count++;
-        switch (count) {
-            case 1: // Trash
-                break;
-            case 2: // Start of ip
-                break;
-            case 3: // Version
-                break;
-            case 4: // Motd
-                break;
-            case 5: { // Current players
-
-                if (buffer[startPos] != 0x30) {
-                    this->serverEmptyTime = 0;
-                    this->state = SERVER_STATE::ONLINE_USING;
-                    break;
-                }
-
-                    //*isEmpty = true;
-                if (this->serverEmptyTime == 0) {
-                    this->serverEmptyTime = time(nullptr);
-                    this->state = SERVER_STATE::ONLINE_EMPTY;
-                }
-
-                break;
-            }
-        }
-
-        startPos = endPos;
-        endPos = readBuf(startPos);
-    }
-
+    shutdown(this->socketHandle, SD_SEND);
     closesocket(this->socketHandle);
     this->socketHandle = 0;
 
@@ -307,6 +254,10 @@ bool MCServer::getStatus() {
 }
 
 bool MCServer::start() {
+
+    // Give the server sometime to start up
+    this->lastPlayerActivity = time(nullptr) + 20;
+
     #ifdef _WIN32
     STARTUPINFOA startupInfo = { sizeof(STARTUPINFOA) };
     PROCESS_INFORMATION processInfo;
@@ -395,196 +346,118 @@ bool MCServer::stop() {
 
     printf("[MCServer -> stop] Stop command sent\n");
 
+    this->state = SERVER_STATE::OFFLINE;
+
     return true;
 }
 
 void MCServer::tpcListener() {
+
+    auto fail = [this](const std::string& errorMsg) {
+        printf("[MCServer -> tpcListener] %s\n", errorMsg.c_str());
+        shutdown(this->socketHandle, SD_SEND);
+        closesocket(this->socketHandle);
+        this->socketHandle = 0;
+        return;
+    };
+
     if (!this->socketHandle) {
-        printf("[MCBackend -> tpcListener] Started listening on %s:%d\n", this->address.c_str(), this->port);
 
         this->socketHandle = socket(AF_INET, SOCK_STREAM, 0);
-        if (this->socketHandle == INVALID_SOCKET) {
-            printf("[MCBackend -> tpcListener] Failed to create socket for %s:%d\n", this->address.c_str(), this->port);
-            return;
-        }
-
-        sockaddr_in serverAddr{};
-        serverAddr.sin_family = AF_INET;
-        serverAddr.sin_port = htons(this->port);
-        if (inet_pton(AF_INET, this->address.c_str(), &serverAddr.sin_addr) <= 0) {
-            printf("[MCServer -> tpcListener] Invalid address: %s\n", this->address.c_str());
-            closesocket(this->socketHandle);
-            this->socketHandle = 0;
-            return;
-        }
+        if (this->socketHandle < 0) 
+            return fail("Failed to create socket");
 
         int opt = 1;
         setsockopt(this->socketHandle, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&opt), sizeof(opt));
 
-        struct linger so_linger;
-        so_linger.l_onoff = 1;  // Enable linger option
-        so_linger.l_linger = 1; // Allow 1 second for cleanup
+#ifdef _WIN32
+        // Optional but can help avoid conflicts
+        setsockopt(this->socketHandle, SOL_SOCKET, SO_EXCLUSIVEADDRUSE, reinterpret_cast<const char*>(&opt), sizeof(opt));
+#endif
+
+        linger so_linger{ 1, 0 }; // hard close
         setsockopt(this->socketHandle, SOL_SOCKET, SO_LINGER, reinterpret_cast<const char*>(&so_linger), sizeof(so_linger));
 
-        if (bind(this->socketHandle, reinterpret_cast<struct sockaddr*>(&serverAddr), sizeof(serverAddr)) < 0) {
-            printf("[MCServer -> tpcListener] Failed to bind %s:%d\n", this->address.c_str(), this->port);
-            closesocket(this->socketHandle);
-            this->socketHandle = 0;
-            return;
-        }
+        sockaddr_in serverAddr{};
+        serverAddr.sin_family = AF_INET;
+        serverAddr.sin_port = htons(this->port);
+        if (inet_pton(AF_INET, this->address.c_str(), &serverAddr.sin_addr) <= 0) 
+            return fail("Address is invalid");
 
-        if (listen(this->socketHandle, 5) < 0) {
-            printf("[MCServer -> tpcListener] Failed to listen on %s:%d\n", this->address.c_str(), this->port);
-            closesocket(this->socketHandle);
-            this->socketHandle = 0;
-            return;
-        }
+        if (bind(socketHandle, reinterpret_cast<sockaddr*>(&serverAddr), sizeof(serverAddr)) < 0) 
+            return fail("Failed to bind socket");
+
+        if (listen(socketHandle, 5) < 0) 
+            return fail("Failed to listen");
 
     #ifdef _WIN32
-        u_long mode = 1;  // 1 = non-blocking
-        ioctlsocket(this->socketHandle, FIONBIO, &mode);
+        u_long mode = 1;
+        ioctlsocket(socketHandle, FIONBIO, &mode);
     #else
-        int flags = fcntl(this->socketHandle, F_GETFL, 0);
-        fcntl(this->socketHandle, F_SETFL, flags | O_NONBLOCK);
+        fcntl(socketHandle, F_SETFL, fcntl(socketHandle, F_GETFL, 0) | O_NONBLOCK);
     #endif
-
-        this->listeningActive = true;
+        printf("[MCServer -> tpcListener] Listening on %s %d\n", this->address.c_str(), this->port);
     }
 
-    timeval timeout;
-    timeout.tv_sec = 0;
-    timeout.tv_usec = 10000;
-
     fd_set readSet;
+    timeval timeout{ 0, 10000 }; // 10ms
+
     FD_ZERO(&readSet);
     FD_SET(this->socketHandle, &readSet);
 
-    int activity = select(
-    #ifdef _WIN32
-        0,
-    #else
-        this->socketHandle + 1,
-    #endif
-        &readSet, NULL, NULL, &timeout);
-
-    if (activity == SOCKET_ERROR) {
-        printf("[MCServer -> tpcListener] Failed to select\n");
-        closesocket(this->socketHandle);
-        this->socketHandle = 0;
-        return;
-    }
-
+    int activity = select(this->socketHandle + 1, &readSet, nullptr, nullptr, &timeout);
     if (activity <= 0 || !FD_ISSET(this->socketHandle, &readSet))
         return;
 
-    // Ensure non-blocking mode (remove redundant blocking setting if not needed)
-    #ifdef _WIN32
-    u_long mode = 0;  // Reset to blocking mode (if required)
-    ioctlsocket(this->socketHandle, FIONBIO, &mode);
-    #else
-    int flags = fcntl(this->socketHandle, F_GETFL, 0);
-    fcntl(this->socketHandle, F_SETFL, flags & ~O_NONBLOCK);  // Reset to blocking mode (if required)
-    #endif
-
-    sockaddr_in clientAddress{};
-    socklen_t clientLength = sizeof(clientAddress);
-    int clientSocket = accept(this->socketHandle, reinterpret_cast<struct sockaddr*>(&clientAddress), &clientLength);
-
-    if (clientSocket == INVALID_SOCKET) {
-        printf("[MCServer -> tpcListener] Failed to accept client\n");
-        return;
-    }
-
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    sockaddr_in clientAddr{};
+    socklen_t addrLen = sizeof(clientAddr);
+    int clientSocket = accept(this->socketHandle, reinterpret_cast<sockaddr*>(&clientAddr), &addrLen);
+    if (clientSocket == INVALID_SOCKET)
+        return fail("Failed to accept client connection");
 
     char buffer[4096] = { 0 };
-    if (recv(clientSocket, buffer, 4096, 0) == -1) {
+    int received = recv(clientSocket, buffer, sizeof(buffer), 0);
+    if (received <= 0) {
+        shutdown(clientSocket, SD_SEND);
         closesocket(clientSocket);
-        return;
+        return fail("Failed to recieve client message");
     }
 
-    uint16_t protocol = 0;
-    memcpy(&protocol, buffer + 2, 2);
+    uint8_t nextState = buffer[7 + buffer[4]];
 
-    uint8_t stringLength = 0;
-    memcpy(&stringLength, buffer + 4, 1);
-    char textElement[130] = { 0 };
-    memcpy(&textElement, buffer + 5, stringLength);
+    Packet packet;
+    packet.setPacketId(0x00);
 
-    uint8_t port1 = 0;
-    uint8_t port2 = 0;
-    memcpy(&port1, buffer + 5 + stringLength, 1);
-    memcpy(&port2, buffer + 6 + stringLength, 1);
-    uint16_t port = (port1 << 8) | port2;
-
-    uint8_t nextState = 0;
-    memcpy(&nextState, buffer + 7 + stringLength, 1);
-    printf("[MCServer -> tpcListener] Activity2: %d\n", nextState);
-
-    // TODO: for multi-server support
-    // Check "nextState"
     switch (nextState) {
         case 1: { // Status
+            std::string json = R"({"version":{"name":"0","protocol":0},"players":{"max":0,"online":0},"description":{"text":")";
+            json += this->name + (this->state == SERVER_STATE::OFFLINE ? " [OFFLINE]" : " [STARTING]");
+            json += R"("}})";
+            packet.addString(json);
 
-            // This happens when the server is in the server list
-            // And the user presses refresh
-            Packet packet;
-            packet.setPacketId(0x00);
-
-            std::string jsonMessage = R"({
-    "version":{"name":"0","protocol":0},
-    "players":{"max":0,"online":0},
-    "description":{"text":")";
-            
-            switch (this->state) {
-                case SERVER_STATE::OFFLINE: {
-                    jsonMessage += this->name + " [OFFLINE]";
-                    break;
-                }
-                case SERVER_STATE::STARTING: {
-                    jsonMessage += this->name + " [STARTING]";
-                    break;
-                }
-            }
-
-            jsonMessage += "\"}\n}";
-
-            packet.addString(jsonMessage);
-            
             const std::vector<uint8_t>& bytes = packet.build();
             send(clientSocket, reinterpret_cast<const char*>(bytes.data()), bytes.size(), 0);
-
+            shutdown(clientSocket, SD_SEND);
             closesocket(clientSocket);
 
             break;
         }
         case 2: { // Login
-            // This happens when the user is trying to join the server
-            // Send "Server will start" back since server is offline rn <- cant figure this out
-            this->listeningActive = false;
-            printf("[MCBackend -> tpcListener] Started server on %s:%d\n", this->address.c_str(), this->port);
+            std::string json = R"({"text":"Server will start","color":"green"})";
+            packet.addString(json);
 
-            Packet packet;
-            packet.setPacketId(0x00);
+            const std::vector<uint8_t>& response = packet.build();
+            send(clientSocket, reinterpret_cast<const char*>(response.data()), response.size(), 0);
 
-            std::string jsonMsg = R"({"text":"Server will start","color":"green"})";
-            packet.addString(jsonMsg);
-
-            const std::vector<uint8_t>& bytes = packet.build();
-            send(clientSocket, reinterpret_cast<const char*>(bytes.data()), bytes.size(), 0);
-
+            shutdown(clientSocket, SD_SEND);
             closesocket(clientSocket);
 
+            shutdown(this->socketHandle, SD_SEND);
             closesocket(this->socketHandle);
             this->socketHandle = 0;
 
-            if (!this->start())
-                break;
-
-            break;
-        }
-        case 3: { // Transfer
-            break;
+            this->start();
+            return;
         }
     }
 }
@@ -600,7 +473,7 @@ MCBackend::MCBackend() {
     });
 
     CROW_ROUTE(this->webServer, "/readFile").methods("POST"_method) ([&](const crow::request& req) {
-        return this->handeReadFile(req);
+        return this->handleReadFile(req);
     });
 
 }
@@ -669,23 +542,51 @@ bool MCBackend::deInitialize() {
 }
 
 void MCBackend::update() {
-
+    
     for (auto& server : this->servers) {
-
-        if (server.listeningActive) {
-            server.tpcListener();
-            continue;
+        if (server.state == SERVER_STATE::OFFLINE) {
+           switch (server.initDesc.startLogic) {
+               case SERVER_DESC_START::KEEP_ONLINE: {
+                   
+                   // The server should always be online
+                   // Start the server incase its offline
+                   if (server.getStatus())
+                       continue;
+    
+                   if (server.state != SERVER_STATE::OFFLINE)
+                       break;
+    
+                   if (!server.start())
+                       break;
+    
+                   break;
+               }
+               case SERVER_DESC_START::PROXY_SERVER: {
+    
+                   // Have a tpc listener on the same address and port
+                   // If a player tries to connect, kick and start server
+                   if (server.state == SERVER_STATE::OFFLINE)
+                       server.tpcListener();
+    
+                   break;
+               }
+           }
+        } else {
+           // Try to retrieve the status while the server is starting or in use
+           server.getStatus();
         }
 
-        if (!server.getStatus()) {
-            if (server.state == SERVER_STATE::OFFLINE)
-                server.tpcListener();
-        } else {
-
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-            if (server.initDesc.autoStop && (time(nullptr) - server.serverEmptyTime) > server.initDesc.autoStopAfter && server.serverEmptyTime != 0)
-                server.stop();
-
+        if (server.state == SERVER_STATE::ONLINE_EMPTY) {
+            switch (server.initDesc.stopLogic) {
+                case SERVER_DESC_STOP::AUTO_STOP: {
+    
+                    // The server should shutdown after X seconds if empty
+                    if (server.state != SERVER_STATE::OFFLINE && server.playerCount == 0 && (time(nullptr) - server.lastPlayerActivity) > server.initDesc.autoStopAfter)
+                        server.stop();
+    
+                    break;
+                }
+            }
         }
     }
 }
@@ -817,7 +718,7 @@ std::string MCBackend::handleRCON(const crow::request& req) {
     // Its a custom command
     return customCommand->second(req);
 }
-std::string MCBackend::handeReadFile(const crow::request& req) {
+std::string MCBackend::handleReadFile(const crow::request& req) {
 
     const nlohmann::json& body = nlohmann::json::parse(req.body, nullptr, false, true);
     if (!body.contains("filePath")) {
@@ -828,7 +729,7 @@ std::string MCBackend::handeReadFile(const crow::request& req) {
         return returnValue.dump();
     }
     const auto& targetFilePath = body.find("filePath");
-    
+
     if (targetFilePath.value().type() != nlohmann::json::value_t::string) {
         nlohmann::json returnValue;
         returnValue["status"] = "failed";
@@ -836,7 +737,7 @@ std::string MCBackend::handeReadFile(const crow::request& req) {
         returnValue["message"] = "Filepath is not a string.";
         return returnValue.dump();
     }
-    
+
     if (targetFilePath.value().type() != nlohmann::json::value_t::string) {
         nlohmann::json returnValue;
         returnValue["status"] = "failed";
@@ -901,7 +802,7 @@ std::string MCBackend::handeReadFile(const crow::request& req) {
         returnValue["message"] = "File doesnt exist.";
         return returnValue.dump();
     }
-    
+
     std::ifstream file(absPath);
     if (!file.is_open()) {
         nlohmann::json returnValue;
@@ -910,10 +811,9 @@ std::string MCBackend::handeReadFile(const crow::request& req) {
         returnValue["message"] = "Failed to open file.";
         return returnValue.dump();
     }
-    
+
     std::stringstream ss;
     ss << file.rdbuf();
     file.close();
     return ss.str();
-    return "";
-    }
+}
