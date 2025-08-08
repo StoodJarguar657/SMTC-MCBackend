@@ -851,5 +851,10 @@ std::string MCBackend::handleReadFile(const crow::request& req) {
     std::stringstream ss;
     ss << file.rdbuf();
     file.close();
-    return ss.str();
+
+    nlohmann::json returnValue;
+    returnValue["status"] = "success";
+    returnValue["message"] = ss.str();
+
+    return returnValue.dump();
 }
