@@ -774,19 +774,11 @@ std::string MCBackend::handleReadFile(const crow::request& req) {
         return returnValue.dump();
     }
 
-    if (targetFilePath.value().type() != nlohmann::json::value_t::string) {
-        nlohmann::json returnValue;
-        returnValue["status"] = "failed";
-        returnValue["errorCode"] = 3;
-        returnValue["message"] = "serverName is not a string.";
-        return returnValue.dump();
-    }
-
     const std::filesystem::path& filePath = targetFilePath->get<std::filesystem::path>();
     if (!filePath.is_relative()) {
         nlohmann::json returnValue;
         returnValue["status"] = "failed";
-        returnValue["errorCode"] = 4;
+        returnValue["errorCode"] = 3;
         returnValue["message"] = "Filepath must be relative.";
         return returnValue.dump();
     }
@@ -794,7 +786,7 @@ std::string MCBackend::handleReadFile(const crow::request& req) {
     if (filePath.string().find("..") != std::string::npos) {
         nlohmann::json returnValue;
         returnValue["status"] = "failed";
-        returnValue["errorCode"] = 5;
+        returnValue["errorCode"] = 4;
         returnValue["message"] = "Cannot enter parent directory.";
         return returnValue.dump();
     }
@@ -802,11 +794,20 @@ std::string MCBackend::handleReadFile(const crow::request& req) {
     if (!body.contains("serverName")) {
         nlohmann::json returnValue;
         returnValue["status"] = "failed";
-        returnValue["errorCode"] = 6;
+        returnValue["errorCode"] = 5;
         returnValue["message"] = "Failed to find 'serverName' in the body.";
         return returnValue.dump();
     }
+
     const auto& targetServer = body.find("serverName");
+
+    if (targetServer.value().type() != nlohmann::json::value_t::string) {
+        nlohmann::json returnValue;
+        returnValue["status"] = "failed";
+        returnValue["errorCode"] = 6;
+        returnValue["message"] = "serverName is not a string.";
+        return returnValue.dump();
+    }
 
     const std::string& targetServerName = targetServer.value().get<std::string>();
 
