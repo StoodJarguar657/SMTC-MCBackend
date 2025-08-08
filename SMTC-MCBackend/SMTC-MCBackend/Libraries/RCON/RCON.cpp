@@ -156,7 +156,7 @@ bool RCON::sendConsoleCommand(const std::string& command, std::string* response)
 
         if (bytesRead == -1) {
             delete[] packetBuffer;
-            return -1;
+            return false;
         }
 
         // Allocate new buffer with updated size
