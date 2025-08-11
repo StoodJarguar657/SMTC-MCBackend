@@ -1,20 +1,27 @@
-const { SlashCommandSubcommandBuilder, MessageFlags } = require("discord.js");
-const RCONManager = require("../../src/managers/RCONManager");
+import { MessageFlags, SlashCommandSubcommandBuilder } from "discord.js"
+import serverManager from "../../src/serverManager.js"
 
-module.exports = {
-    permissionLevel: 1,
+export default {
     data: new SlashCommandSubcommandBuilder()
         .setName("remove")
-        .setDescription("Removes a player to the whitelist")
-        .addStringOption(option => option.setName("username").setDescription("The name of the user to remove").setRequired(true))
-    ,
+        .setDescription("Removes a user from the whitelist")
+        .addStringOption(option => option.setName("username").setDescription("The user to remove from the whitelist").setRequired(true)),
 
-    async Init() {},
+    permissionLevel: 2,
 
-    /** @param {import("discord.js").Interaction} interaction */
-    async Execute(interaction) {
+    async init() {},
+
+    /**
+     * @param {import("discord.js").ChatInputCommandInteraction} interaction 
+     * @param {import("serverInfo").ServerInfo} serverInfo 
+     * @param {number} permissionLevel
+     */
+    async execute(interaction, serverInfo, permissionLevel) {
         const username = interaction.options.getString("username")
-        const response = await RCONManager.SendCommand(interaction.member.id, `/whitelist remove ${username}`)
+        const response = await serverManager.sendRcon(serverInfo, `whitelist remove ${username}`)
+        if (response.status === "success") {
+            return await interaction.reply({ content: response.message, flags: MessageFlags.Ephemeral})
+        }
 
         await interaction.reply({ content: response.message, flags: MessageFlags.Ephemeral })
     }

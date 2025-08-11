@@ -5,8 +5,8 @@ import fs from "fs/promises"
 
 export default {
     data: new SlashCommandBuilder()
-        .setName("whitelist")
-        .setDescription("Whitelist related Commands"),
+        .setName("moderation")
+        .setDescription("Moderation related Commands"),
     permissionLevel: 2,
 
     /**
@@ -50,7 +50,7 @@ export default {
         const subcommand = this.subCommands.find(cmd => cmd.data.name === subcommandName);
 
         if(subcommand.permissionLevel > permissionLevel)
-            return await interaction.reply({ content: "You do not have permission to run this command!", flags: MessageFlags.Ephemeral})
+            return await interaction.reply({ content: "You do not have permission to run this command!", flags: MessageFlags.Ephemeral })
 
         if(subcommand)
            return await subcommand.execute(interaction, serverInfo);

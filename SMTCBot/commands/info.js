@@ -1,18 +1,20 @@
-const { SlashCommandBuilder } = require("discord.js");
-const SettingsManager = require("../src/managers/SettingsManager");
+import { MessageFlags, SlashCommandBuilder } from "discord.js"
 
-module.exports = {
-    permissionLevel: 0,
+export default {
     data: new SlashCommandBuilder()
-        .setName("server-info")
-        .setDescription("Gives you server information"),
+        .setName("info")
+        .setDescription("Provides server information"),
 
-    async Init() {},
+    permissionLevel: 1,
 
-    /** @param {import("discord.js").Interaction} interaction */
-    async Execute(interaction) {
-        const settings = await SettingsManager.LoadSettings()
+    async init() {},
 
-        await interaction.reply(`**Information about the server:**\n\nServer Address: **${settings.info.serverAddress}**\nMap URL: **${settings.info.mapUrl}**`)
+    /**
+     * @param {import("discord.js").ChatInputCommandInteraction} interaction 
+     * @param {import("serverInfo").ServerInfo} serverInfo 
+     * @param {number} permissionLevel
+     */
+    async execute(interaction, serverInfo, permissionLevel) {
+        await interaction.reply({ content: `# ${serverInfo.displayName}'s Information\nServer IP: ${serverInfo.address}\n\n${serverInfo.description}`, flags: MessageFlags.Ephemeral })
     }
 }

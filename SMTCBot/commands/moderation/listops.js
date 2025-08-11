@@ -4,12 +4,12 @@ import Table from "cli-table3";
 
 export default {
     data: new SlashCommandSubcommandBuilder()
-        .setName("list")
-        .setDescription("Lists all whitelisted users"),
+        .setName("list-ops")
+        .setDescription("Lists all opped users"),
 
     permissionLevel: 2,
 
-    async init() { },
+    async init() {},
 
     /**
      * @param {import("discord.js").ChatInputCommandInteraction} interaction 
@@ -17,25 +17,27 @@ export default {
      * @param {number} permissionLevel
      */
     async execute(interaction, serverInfo, permissionLevel) {
-        const response = await serverManager.readFile(serverInfo, "whitelist.json")
-        if (response.status !== "success")
-            return await interaction.reply({ content: response.message, flags: MessageFlags.Ephemeral })
+        const data = await serverManager.readFile(serverInfo, "ops.json")
+        if(data.status !== "success")
+            return await interaction.reply({ content: data.message, flags: MessageFlags.Ephemeral })
+
+        const operators = JSON.parse(data.message).map((player) => [player.uuid, player.name, player.level, player.bypassesPlayerLimit ? "Yes" : "No"])
 
         const tbl = new Table({
-            head: ["Player UUID", "Player Name"],
+            head: ["Player UUID", "Player Name", "Operator Level", "Bypasses player limit?"],
             style: {
                 head: [],
                 border: []
             }
         })
-
-        JSON.parse(response.message).forEach(value => tbl.push([value.uuid, value.name]))
+        
+        tbl.push(...operators)
 
         const tableOutput = tbl.toString();
         if (tableOutput.length <= (2000 - 8)) {
             return await interaction.reply({ content: `\`\`\`\n${tableOutput}\n\`\`\``, flags: MessageFlags.Ephemeral });
         }
-
+    
         const buffer = Buffer.from(tableOutput, "utf-8");
         const attachment = new AttachmentBuilder(buffer, { name: "response.txt" });
         await interaction.reply({ files: [attachment], flags: MessageFlags.Ephemeral });

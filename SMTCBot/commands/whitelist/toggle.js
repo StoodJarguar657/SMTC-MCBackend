@@ -3,13 +3,13 @@ import serverManager from "../../src/serverManager.js"
 
 export default {
     data: new SlashCommandSubcommandBuilder()
-        .setName("add")
-        .setDescription("Adds a user to the whitelist")
-        .addStringOption(option => option.setName("username").setDescription("The user to add to the whitelist").setRequired(true)),
+        .setName("toggle")
+        .setDescription("Enables/disables whitelist")
+        .addBooleanOption(option => option.setName("enabled").setDescription("To enable or disable whitelist").setRequired(true)),
 
     permissionLevel: 2,
 
-    async init() {},
+    async init() { },
 
     /**
      * @param {import("discord.js").ChatInputCommandInteraction} interaction 
@@ -17,8 +17,9 @@ export default {
      * @param {number} permissionLevel
      */
     async execute(interaction, serverInfo, permissionLevel) {
-        const username = interaction.options.getString("username")
-        const response = await serverManager.sendRcon(serverInfo, `whitelist add ${username}`)
+        const enabled = interaction.options.getBoolean("enabled")
+        const response = await serverManager.sendRcon(serverInfo, `whitelist ${enabled ? "on" : "off"}`)
+
         if (response.status === "success") {
             return await interaction.reply({ content: response.message, flags: MessageFlags.Ephemeral})
         }

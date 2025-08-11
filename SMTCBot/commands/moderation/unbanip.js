@@ -3,9 +3,9 @@ import serverManager from "../../src/serverManager.js"
 
 export default {
     data: new SlashCommandSubcommandBuilder()
-        .setName("add")
-        .setDescription("Adds a user to the whitelist")
-        .addStringOption(option => option.setName("username").setDescription("The user to add to the whitelist").setRequired(true)),
+        .setName("unban-ip")
+        .setDescription("Unbans a ip address")
+        .addStringOption(option => option.setName("ip").setDescription("The ip address to ban").setRequired(true)),
 
     permissionLevel: 2,
 
@@ -17,8 +17,8 @@ export default {
      * @param {number} permissionLevel
      */
     async execute(interaction, serverInfo, permissionLevel) {
-        const username = interaction.options.getString("username")
-        const response = await serverManager.sendRcon(serverInfo, `whitelist add ${username}`)
+        const ip = interaction.options.getString("ip")        
+        const response = await serverManager.sendRcon(serverInfo, `pardon-ip ${ip}`)
         if (response.status === "success") {
             return await interaction.reply({ content: response.message, flags: MessageFlags.Ephemeral})
         }

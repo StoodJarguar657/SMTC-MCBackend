@@ -5,8 +5,8 @@ import fs from "fs/promises"
 
 export default {
     data: new SlashCommandBuilder()
-        .setName("whitelist")
-        .setDescription("Whitelist related Commands"),
+        .setName("levels")
+        .setDescription("User level management Commands"),
     permissionLevel: 2,
 
     /**
